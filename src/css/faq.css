@@ -1,0 +1,116 @@
+/* General Reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* FAQ Section Container */
+.faq-section {
+  max-width: 900px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  user-select: none;
+}
+
+/* FAQ Header */
+.faq-header {
+  text-align: center;
+  padding: 3rem 0 2rem;
+}
+
+.faq-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #2e3a59;
+  margin-bottom: 0.6rem;
+  letter-spacing: 1.4px;
+}
+
+.faq-subtitle {
+  font-size: 1.1rem;
+  color: #5a5f6e;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* FAQ List */
+.faq-list {
+  margin-top: 1.8rem;
+  border-top: 2px solid #f4a261;
+}
+
+/* FAQ Item */
+.faq-item {
+  border-bottom: 1px solid #eee;
+  padding: 1.8rem 0;
+  transition: background-color 0.3s ease;
+}
+
+.faq-item.active {
+  background-color: #f9f6f3;
+}
+
+/* Question Button */
+.faq-question {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2e3a59;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+.faq-question:hover,
+.faq-question:focus {
+  color: #f4a261;
+  outline: none;
+}
+
+/* Arrow Icon */
+.arrow {
+  font-size: 1.4rem;
+  transition: transform 0.3s ease;
+  color: #f4a261;
+}
+
+/* Rotate Arrow When Active */
+.faq-item.active .arrow {
+  transform: rotate(180deg);
+}
+
+/* Answer Text */
+.faq-answer {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #5a5f6e;
+  line-height: 1.6;
+  user-select: text;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  padding-left: 1rem;
+  border-left: 4px solid #f4a261;
+}
+
+/* Show Answer When Active */
+.faq-item.active .faq-answer {
+  max-height: 500px;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}

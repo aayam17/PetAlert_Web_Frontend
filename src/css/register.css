@@ -1,0 +1,125 @@
+/* register.css */
+
+.auth-container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  margin: 2rem 0;
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  max-width: 900px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+}
+
+.form-container {
+  flex: 1;
+  padding: 40px 50px;
+  box-sizing: border-box;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form h2 {
+  margin-bottom: 30px;
+  color: #333;
+  font-weight: 700;
+  text-align: center;
+}
+
+label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #444;
+}
+
+input {
+  margin-bottom: 20px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.5);
+}
+
+.error-input {
+  border: 2px solid #e74c3c !important;
+}
+
+.error-text {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: -12px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.btn-primary {
+  width: 100%;
+  background-color: #4a90e2;
+  color: white;
+  padding: 12px 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #357abd;
+}
+
+.image-container {
+  width: 400px; /* same width as form container roughly */
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  min-height: 100%;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .form-container,
+  .image-container {
+    width: 100%;
+    padding: 20px;
+  }
+  .image-container {
+    height: 200px;
+  }
+}

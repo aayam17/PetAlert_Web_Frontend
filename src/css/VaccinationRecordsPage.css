@@ -1,0 +1,123 @@
+.vaccination-records-page {
+  min-height: 100vh;
+  width: 100vw;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #f9f9f9;
+}
+
+.vaccination-form {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.vaccination-form label {
+  font-weight: bold;
+  color: #2e3a59;
+}
+
+/* Datepicker Inputs */
+.custom-datepicker,
+.react-datepicker-wrapper,
+.react-datepicker__input-container input {
+  background-color: white !important;
+  color: #333 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  padding: 0.5rem !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  font-size: 1rem !important;
+}
+
+/* Focus style for inputs */
+.custom-datepicker:focus,
+.react-datepicker__input-container input:focus,
+.vaccination-form input:focus,
+.vaccination-form textarea:focus {
+  outline: 2px solid #2e3a59 !important;
+}
+
+/* Datepicker popup background */
+.react-datepicker-popper,
+.react-datepicker {
+  background-color: white !important;
+  color: #333 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Inputs */
+.vaccination-form input[type="text"],
+.vaccination-form textarea {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vaccination-form textarea::placeholder,
+.vaccination-form input::placeholder {
+  color: #999;
+}
+
+/* File Input */
+.vaccination-form input[type="file"] {
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  background: white;
+  color: #333;
+}
+
+/* Submit Button */
+.vaccination-form button {
+  background-color: #2e3a59;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.vaccination-form button:hover {
+  background-color: #242c46;
+}
+
+/* Record List */
+.record-list {
+  width: 100%;
+  max-width: 900px;
+}
+
+.record-card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.record-list-heading {
+  font-size: 2rem;
+  color: #2e3a59;
+  margin-bottom: 1rem;
+}

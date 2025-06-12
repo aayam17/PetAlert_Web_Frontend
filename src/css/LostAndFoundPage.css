@@ -1,0 +1,87 @@
+.lost-and-found-page {
+  min-height: 100vh;
+  width: 100vw;
+  padding: 2rem 3rem;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.lost-and-found-form {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.lost-and-found-form label {
+  font-weight: bold;
+  color: #2e3a59;
+}
+
+.lost-and-found-form input[type="text"],
+.lost-and-found-form input[type="date"],
+.lost-and-found-form select,
+.lost-and-found-form textarea,
+.lost-and-found-form input[type="file"] {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.lost-and-found-form textarea::placeholder {
+  color: #999;
+}
+
+.lost-and-found-form button {
+  background-color: #2e3a59;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.lost-and-found-form button:hover {
+  background-color: #242c46;
+}
+
+.entry-list {
+  width: 100%;
+  max-width: 600px;
+}
+
+.entry-card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.entry-card.lost {
+  border-left: 4px solid #e74c3c; /* red-ish for Lost */
+}
+
+.entry-card.found {
+  border-left: 4px solid #27ae60; /* green-ish for Found */
+}
+
+.entry-list-heading {
+  font-size: 2rem;
+  color: #2e3a59;
+  margin-bottom: 1rem;
+}

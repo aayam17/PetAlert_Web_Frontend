@@ -1,0 +1,162 @@
+/* MemorialPage Container */
+.memorial-page {
+  max-width: 650px;
+  margin: 3rem auto;
+  padding: 2rem 2.5rem;
+  background-color: #f3f0f5;
+  border-radius: 12px;
+  box-shadow: 0 3px 15px rgba(150, 130, 180, 0.15);
+  font-family: 'Georgia', serif;
+  color: #4b3b57;
+}
+
+/* Title */
+.memorial-page h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #6b5876;
+  letter-spacing: 1.2px;
+}
+
+/* Form styling */
+.memorial-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.memorial-form label {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+  color: #5a4d6b;
+}
+
+/* Default Inputs and textarea */
+.memorial-form input[type="text"],
+.memorial-form textarea,
+.memorial-form select,
+.memorial-form .custom-datepicker,
+.memorial-form .custom-timepicker {
+  padding: 0.75rem 1rem;
+  border: 1px solid #a89cc0;
+  border-radius: 8px;
+  background-color: #fffafc;
+  font-size: 1rem;
+  color: #4b3b57;
+  transition: border-color 0.3s ease;
+  font-family: 'Georgia', serif;
+}
+
+.memorial-form input[type="text"]:focus,
+.memorial-form textarea:focus,
+.memorial-form select:focus,
+.memorial-form .custom-datepicker:focus,
+.memorial-form .custom-timepicker:focus {
+  border-color: #9077bf;
+  outline: none;
+}
+
+.memorial-form textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-style: italic;
+  color: #6b5876;
+}
+
+/* File input */
+.memorial-form input[type="file"] {
+  font-size: 0.95rem;
+  color: #6b5876;
+  background-color: #fffafc;
+  border: none;
+}
+
+/* Submit Button */
+.memorial-form button {
+  padding: 0.75rem 1.5rem;
+  background-color: #7d68a3;
+  border: none;
+  border-radius: 30px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  align-self: center;
+  width: 160px;
+  transition: background-color 0.3s ease;
+  font-family: 'Georgia', serif;
+}
+
+.memorial-form button:hover {
+  background-color: #5f4e7a;
+}
+
+/* Memorial entries list */
+.memorial-list {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.memorial-card {
+  background-color: #fff8fd;
+  border-left: 6px solid #9077bf;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 10px rgba(144, 119, 191, 0.12);
+  font-family: 'Georgia', serif;
+  color: #5a4d6b;
+  line-height: 1.4;
+}
+
+.memorial-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  font-style: italic;
+  color: #7d68a3;
+}
+
+.memorial-card p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.memorial-card p strong {
+  color: #6b5876;
+}
+
+/* --- FORCE white background & black text for name, relation and message --- */
+.memorial-form input[name="name"],
+.memorial-form input[name="relation"],
+.memorial-form textarea[name="message"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  font-style: normal !important; /* remove italic */
+  border: 1px solid #a89cc0 !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 8px !important;
+  font-family: 'Georgia', serif !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+.memorial-form input[name="name"]:focus,
+.memorial-form input[name="relation"]:focus,
+.memorial-form textarea[name="message"]:focus {
+  border-color: #9077bf !important;
+  outline: none !important;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .memorial-page {
+    padding: 1.5rem 1rem;
+  }
+  .memorial-form button {
+    width: 100%;
+  }
+}
