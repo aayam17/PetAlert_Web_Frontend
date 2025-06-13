@@ -1,38 +1,53 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoPet from '../assets/logo_pet.png'; 
+import api from '../api/axios'; // Correct named import for custom Axios instance
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
   const navigate = useNavigate();
 
   const validate = () => {
     const newErrors = {};
     if (!email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
+
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setApiError("");
+
     if (!validate()) return;
-    console.log("Logging in", { email, password });
-    navigate("/dashboard");
+
+    try {
+      const response = await api.post('/login', { email, password });
+      console.log("Login success:", response.data);
+      // Example: save token/user info if needed
+      // localStorage.setItem("token", response.data.token);
+      navigate("/dashboard");
+    } catch (error) {
+      if (error.response?.data?.message) {
+        setApiError(error.response.data.message);
+      } else {
+        setApiError("Failed to login. Please try again.");
+      }
+    }
   };
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-
-        * {
-          box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body, html, #root {
           margin: 0; padding: 0; height: 100%;
           font-family: 'Inter', sans-serif;
@@ -152,6 +167,13 @@ const Login = () => {
           margin-top: -14px;
           margin-bottom: 18px;
         }
+        .api-error-text {
+          color: #b91c1c;
+          font-size: 0.95rem;
+          font-weight: 600;
+          margin-bottom: 18px;
+          text-align: center;
+        }
         button {
           padding: 16px 0;
           font-weight: 700;
@@ -220,7 +242,7 @@ const Login = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your username"
+              placeholder="Enter your email"
               className={errors.email ? "input-error" : ""}
               aria-describedby="email-error"
               required
@@ -241,6 +263,8 @@ const Login = () => {
               autoComplete="current-password"
             />
             {errors.password && <p id="password-error" className="error-text">{errors.password}</p>}
+
+            {apiError && <p className="api-error-text" role="alert">{apiError}</p>}
 
             <button type="submit" aria-label="Login to your account">Login</button>
           </form>
