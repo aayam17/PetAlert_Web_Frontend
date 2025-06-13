@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import "../css/VaccinationRecordsPage.css";
@@ -36,9 +36,13 @@ const VaccinationRecordsPage = () => {
       uploadedFileName: form.file?.name || null,
     };
 
-    setRecords([...records, newRecord]);
+    setRecords(prev => [...prev, newRecord]);
     setForm({ date: null, vaccine: '', notes: '', file: null });
   };
+
+  const sortedRecords = useMemo(() => {
+    return [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [records]);
 
   return (
     <div className="vaccination-records-page">
@@ -87,9 +91,9 @@ const VaccinationRecordsPage = () => {
 
       <section>
         <h2 className="record-list-heading">Vaccination History</h2>
-        {records.length > 0 ? (
+        {sortedRecords.length > 0 ? (
           <div className="record-list">
-            {records.map(record => (
+            {sortedRecords.map(record => (
               <div key={record.id} className="record-card">
                 <h3>{record.date} - {record.vaccine}</h3>
                 {record.notes && <p><strong>Notes:</strong> {record.notes}</p>}
