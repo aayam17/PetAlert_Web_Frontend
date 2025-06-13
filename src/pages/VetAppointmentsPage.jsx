@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimePicker from 'react-time-picker';
@@ -43,13 +43,17 @@ const VetAppointmentsPage = () => {
       uploadedFileName: form.file?.name || null,
     };
 
-    setAppointments([...appointments, newAppointment]);
+    setAppointments(prev => [...prev, newAppointment]);
     setForm({ date: null, time: '', notes: '', file: null });
   };
 
-  const now = new Date();
-  const upcoming = appointments.filter(app => new Date(`${app.date}T${app.time}`) >= now);
-  const past = appointments.filter(app => new Date(`${app.date}T${app.time}`) < now);
+  const now = useMemo(() => new Date(), []);
+  const upcoming = useMemo(() =>
+    appointments.filter(app => new Date(`${app.date}T${app.time}`) >= now),
+  [appointments, now]);
+  const past = useMemo(() =>
+    appointments.filter(app => new Date(`${app.date}T${app.time}`) < now),
+  [appointments, now]);
 
   return (
     <div className="vet-appointment-page">
@@ -96,38 +100,38 @@ const VetAppointmentsPage = () => {
       </form>
 
       <section>
-  <h2 className="appointment-section-heading">Upcoming Appointments</h2>
-  {upcoming.length > 0 ? (
-    <div className="appointment-list">
-      {upcoming.map(app => (
-        <div key={app.id} className="appointment-card">
-          <h3>{app.date} at {app.time}</h3>
-          {app.notes && <p><strong>Notes:</strong> {app.notes}</p>}
-          {app.uploadedFileName && <p><strong>File:</strong> {app.uploadedFileName}</p>}
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p>No upcoming appointments.</p>
-  )}
-</section>
+        <h2 className="appointment-section-heading">Upcoming Appointments</h2>
+        {upcoming.length > 0 ? (
+          <div className="appointment-list">
+            {upcoming.map(app => (
+              <div key={app.id} className="appointment-card">
+                <h3>{app.date} at {app.time}</h3>
+                {app.notes && <p><strong>Notes:</strong> {app.notes}</p>}
+                {app.uploadedFileName && <p><strong>File:</strong> {app.uploadedFileName}</p>}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No upcoming appointments.</p>
+        )}
+      </section>
 
-<section style={{ marginTop: '4rem' }}>
-  <h2 className="appointment-section-heading">Past Appointments</h2>
-  {past.length > 0 ? (
-    <div className="appointment-list">
-      {past.map(app => (
-        <div key={app.id} className="appointment-card">
-          <h3>{app.date} at {app.time}</h3>
-          {app.notes && <p><strong>Notes:</strong> {app.notes}</p>}
-          {app.uploadedFileName && <p><strong>File:</strong> {app.uploadedFileName}</p>}
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p>No past appointments.</p>
-  )}
-</section>
+      <section style={{ marginTop: '4rem' }}>
+        <h2 className="appointment-section-heading">Past Appointments</h2>
+        {past.length > 0 ? (
+          <div className="appointment-list">
+            {past.map(app => (
+              <div key={app.id} className="appointment-card">
+                <h3>{app.date} at {app.time}</h3>
+                {app.notes && <p><strong>Notes:</strong> {app.notes}</p>}
+                {app.uploadedFileName && <p><strong>File:</strong> {app.uploadedFileName}</p>}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No past appointments.</p>
+        )}
+      </section>
     </div>
   );
 };
