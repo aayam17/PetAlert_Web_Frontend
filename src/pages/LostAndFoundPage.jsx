@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
@@ -15,7 +15,7 @@ const LostAndFoundPage = () => {
     date: null,
     time: "",
     file: null,
-    fileDataUrl: null, // <-- for preview image
+    fileDataUrl: null,
   });
 
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ const LostAndFoundPage = () => {
         setForm((prev) => ({
           ...prev,
           file: file,
-          fileDataUrl: reader.result, // base64 string for preview
+          fileDataUrl: reader.result,
         }));
       };
       reader.readAsDataURL(file);
@@ -41,31 +41,23 @@ const LostAndFoundPage = () => {
   };
 
   const handleDateChange = (date) => {
-    setForm((prev) => ({
-      ...prev,
-      date,
-    }));
+    setForm((prev) => ({ ...prev, date }));
   };
 
   const handleTimeChange = (time) => {
-    setForm((prev) => ({
-      ...prev,
-      time,
-    }));
+    setForm((prev) => ({ ...prev, time }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      !form.description.trim() ||
-      !form.location.trim() ||
-      !form.date ||
-      !form.time
-    ) {
+    const { description, location, date, time } = form;
+
+    if (!description.trim() || !location.trim() || !date || !time) {
       alert("Please fill in all required fields including date and time.");
       return;
     }
-    const formattedDate = form.date.toISOString().split("T")[0]; // YYYY-MM-DD
+
+    const formattedDate = date.toISOString().split("T")[0];
 
     const newEntry = {
       ...form,
@@ -86,6 +78,14 @@ const LostAndFoundPage = () => {
       fileDataUrl: null,
     });
   };
+
+  const sortedEntries = useMemo(() => {
+    return [...entries].sort((a, b) => {
+      const dateTimeA = new Date(`${a.date}T${a.time}`);
+      const dateTimeB = new Date(`${b.date}T${b.time}`);
+      return dateTimeB - dateTimeA;
+    });
+  }, [entries]);
 
   return (
     <div className="vet-appointment-page">
@@ -150,9 +150,9 @@ const LostAndFoundPage = () => {
 
       <section>
         <h2 className="upcoming-appointments">Entries</h2>
-        {entries.length > 0 ? (
+        {sortedEntries.length > 0 ? (
           <div className="appointment-list">
-            {entries.map((entry) => (
+            {sortedEntries.map((entry) => (
               <div
                 key={entry.id}
                 className={`appointment-card ${entry.type.toLowerCase()}`}
@@ -160,14 +160,9 @@ const LostAndFoundPage = () => {
                 <h3>
                   [{entry.type}] {entry.description}
                 </h3>
-                <p>
-                  <strong>Location:</strong> {entry.location}
-                </p>
-                <p>
-                  <strong>Date & Time:</strong> {entry.date} at {entry.time}
-                </p>
+                <p><strong>Location:</strong> {entry.location}</p>
+                <p><strong>Date & Time:</strong> {entry.date} at {entry.time}</p>
 
-                {/* Show image preview if the uploaded file is an image */}
                 {entry.fileDataUrl && (
                   <img
                     src={entry.fileDataUrl}
@@ -182,11 +177,8 @@ const LostAndFoundPage = () => {
                   />
                 )}
 
-                {/* Show filename if present */}
                 {entry.uploadedFileName && (
-                  <p>
-                    <strong>File:</strong> {entry.uploadedFileName}
-                  </p>
+                  <p><strong>File:</strong> {entry.uploadedFileName}</p>
                 )}
               </div>
             ))}
