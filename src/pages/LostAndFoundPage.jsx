@@ -1,10 +1,11 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
-import "react-clock/dist/Clock.css"; 
-import "../css/VetAppointmentPage.css"; 
+import "react-clock/dist/Clock.css";
+import "../css/VetAppointmentPage.css";
+import { getLostAndFound, addLostAndFound } from "../api/lostAndFound";
 
 const LostAndFoundPage = () => {
   const [entries, setEntries] = useState([]);
@@ -17,6 +18,12 @@ const LostAndFoundPage = () => {
     file: null,
     fileDataUrl: null,
   });
+
+  useEffect(() => {
+    getLostAndFound().then((res) => setEntries(res.data)).catch(err => {
+      console.error("Error fetching entries:", err);
+    });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -48,9 +55,9 @@ const LostAndFoundPage = () => {
     setForm((prev) => ({ ...prev, time }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { description, location, date, time } = form;
+    const { description, location, date, time, type } = form;
 
     if (!description.trim() || !location.trim() || !date || !time) {
       alert("Please fill in all required fields including date and time.");
@@ -59,24 +66,32 @@ const LostAndFoundPage = () => {
 
     const formattedDate = date.toISOString().split("T")[0];
 
-    const newEntry = {
-      ...form,
-      id: Date.now(),
-      date: formattedDate,
-      uploadedFileName: form.file?.name || null,
-    };
+    try {
+      const newEntry = {
+        description,
+        location,
+        date: formattedDate,
+        time,
+        type,
+        contactInfo: "test@example.com", // You can update this based on auth
+      };
 
-    setEntries((prev) => [newEntry, ...prev]);
+      const response = await addLostAndFound(newEntry);
+      setEntries((prev) => [response.data, ...prev]);
 
-    setForm({
-      type: "Lost",
-      description: "",
-      location: "",
-      date: null,
-      time: "",
-      file: null,
-      fileDataUrl: null,
-    });
+      setForm({
+        type: "Lost",
+        description: "",
+        location: "",
+        date: null,
+        time: "",
+        file: null,
+        fileDataUrl: null,
+      });
+    } catch (error) {
+      console.error("Failed to submit entry:", error);
+      alert("Submission failed.");
+    }
   };
 
   const sortedEntries = useMemo(() => {
@@ -154,7 +169,7 @@ const LostAndFoundPage = () => {
           <div className="appointment-list">
             {sortedEntries.map((entry) => (
               <div
-                key={entry.id}
+                key={entry._id || entry.id}
                 className={`appointment-card ${entry.type.toLowerCase()}`}
               >
                 <h3>
@@ -162,24 +177,6 @@ const LostAndFoundPage = () => {
                 </h3>
                 <p><strong>Location:</strong> {entry.location}</p>
                 <p><strong>Date & Time:</strong> {entry.date} at {entry.time}</p>
-
-                {entry.fileDataUrl && (
-                  <img
-                    src={entry.fileDataUrl}
-                    alt="Uploaded preview"
-                    style={{
-                      maxWidth: "200px",
-                      maxHeight: "150px",
-                      marginTop: "10px",
-                      borderRadius: "6px",
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
-
-                {entry.uploadedFileName && (
-                  <p><strong>File:</strong> {entry.uploadedFileName}</p>
-                )}
               </div>
             ))}
           </div>

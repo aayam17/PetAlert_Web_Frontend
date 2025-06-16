@@ -1,11 +1,18 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import "../css/VaccinationRecordsPage.css";
+import { getVaccinationRecords, addVaccinationRecord } from '../api/vaccinationRecords';
 
 const VaccinationRecordsPage = () => {
   const [records, setRecords] = useState([]);
   const [form, setForm] = useState({ date: null, vaccine: '', notes: '', file: null });
+
+  useEffect(() => {
+    getVaccinationRecords().then(res => setRecords(res.data)).catch(err => {
+      console.error("Error loading vaccination records:", err);
+    });
+  }, []);
 
   const handleDateChange = (date) => {
     setForm(prev => ({ ...prev, date }));
@@ -19,7 +26,7 @@ const VaccinationRecordsPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.date || !form.vaccine.trim()) {
@@ -27,17 +34,23 @@ const VaccinationRecordsPage = () => {
       return;
     }
 
-    const formattedDate = form.date.toISOString().split('T')[0]; // YYYY-MM-DD
+    const formattedDate = form.date.toISOString().split('T')[0];
 
-    const newRecord = {
-      ...form,
-      id: Date.now(),
-      date: formattedDate,
-      uploadedFileName: form.file?.name || null,
-    };
+    try {
+      const newRecord = {
+        date: formattedDate,
+        vaccine: form.vaccine,
+        notes: form.notes,
+      };
 
-    setRecords(prev => [...prev, newRecord]);
-    setForm({ date: null, vaccine: '', notes: '', file: null });
+      const response = await addVaccinationRecord(newRecord);
+      setRecords(prev => [...prev, response.data]);
+
+      setForm({ date: null, vaccine: '', notes: '', file: null });
+    } catch (error) {
+      console.error("Failed to add vaccination record:", error);
+      alert("Failed to submit vaccination record.");
+    }
   };
 
   const sortedRecords = useMemo(() => {
@@ -94,10 +107,9 @@ const VaccinationRecordsPage = () => {
         {sortedRecords.length > 0 ? (
           <div className="record-list">
             {sortedRecords.map(record => (
-              <div key={record.id} className="record-card">
+              <div key={record._id || record.id} className="record-card">
                 <h3>{record.date} - {record.vaccine}</h3>
                 {record.notes && <p><strong>Notes:</strong> {record.notes}</p>}
-                {record.uploadedFileName && <p><strong>File:</strong> {record.uploadedFileName}</p>}
               </div>
             ))}
           </div>
