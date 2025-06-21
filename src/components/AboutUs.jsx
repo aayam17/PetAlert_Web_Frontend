@@ -1,5 +1,5 @@
 import React from "react";
-import '../css/aboutus.css';  // fixed relative path
+import '../css/aboutus.css'; 
 
 const AboutUs = () => {
   return (

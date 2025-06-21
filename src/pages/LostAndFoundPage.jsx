@@ -1,43 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
+import "react-datepicker/dist/react-datepicker.css";
 import "react-time-picker/dist/TimePicker.css";
-import "react-clock/dist/Clock.css"; 
-import "../css/VetAppointmentPage.css"; 
+import "react-clock/dist/Clock.css";
+import "../css/VetAppointmentPage.css";
+
+import {
+  getLostAndFound,
+  addLostAndFound,
+  updateLostAndFound,
+  deleteLostAndFound,
+} from "../api/LostAndFoundApi";
 
 const LostAndFoundPage = () => {
   const [entries, setEntries] = useState([]);
+  const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
     type: "Lost",
     description: "",
     location: "",
     date: null,
     time: "",
-    file: null,
-    fileDataUrl: null, // <-- for preview image
   });
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
-    if (files && files.length > 0) {
-      const file = files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm((prev) => ({
-          ...prev,
-          file: file,
-          fileDataUrl: reader.result, // base64 string for preview
-        }));
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setForm((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+  const fetchEntries = async () => {
+    try {
+      const { data } = await getLostAndFound();
+      setEntries(data);
+    } catch (err) {
+      console.error("Error fetching lost and found entries:", err);
     }
+  };
+
+  useEffect(() => {
+    fetchEntries();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleDateChange = (date) => {
@@ -54,37 +59,62 @@ const LostAndFoundPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (
       !form.description.trim() ||
       !form.location.trim() ||
       !form.date ||
       !form.time
     ) {
-      alert("Please fill in all required fields including date and time.");
+      alert("Please fill in all required fields.");
       return;
     }
-    const formattedDate = form.date.toISOString().split("T")[0]; // YYYY-MM-DD
 
-    const newEntry = {
+    const payload = {
       ...form,
-      id: Date.now(),
-      date: formattedDate,
-      uploadedFileName: form.file?.name || null,
+      date: form.date.toISOString().split("T")[0],
     };
 
-    setEntries((prev) => [newEntry, ...prev]);
+    try {
+      if (editingId) {
+        await updateLostAndFound(editingId, payload);
+      } else {
+        await addLostAndFound(payload);
+      }
+      setForm({
+        type: "Lost",
+        description: "",
+        location: "",
+        date: null,
+        time: "",
+      });
+      setEditingId(null);
+      fetchEntries();
+    } catch (err) {
+      console.error("Error submitting lost and found entry:", err);
+    }
+  };
 
+  const handleEdit = (entry) => {
     setForm({
-      type: "Lost",
-      description: "",
-      location: "",
-      date: null,
-      time: "",
-      file: null,
-      fileDataUrl: null,
+      type: entry.type,
+      description: entry.description,
+      location: entry.location,
+      date: new Date(entry.date),
+      time: entry.time,
     });
+    setEditingId(entry._id);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteLostAndFound(id);
+      fetchEntries();
+    } catch (err) {
+      console.error("Error deleting entry:", err);
+    }
   };
 
   return (
@@ -137,15 +167,7 @@ const LostAndFoundPage = () => {
           clearIcon={null}
         />
 
-        <label>Upload File (optional)</label>
-        <input
-          type="file"
-          name="file"
-          accept=".jpg,.png,.pdf"
-          onChange={handleChange}
-        />
-
-        <button type="submit">Add Entry</button>
+        <button type="submit">{editingId ? "Update" : "Add"} Entry</button>
       </form>
 
       <section>
@@ -154,7 +176,7 @@ const LostAndFoundPage = () => {
           <div className="appointment-list">
             {entries.map((entry) => (
               <div
-                key={entry.id}
+                key={entry._id}
                 className={`appointment-card ${entry.type.toLowerCase()}`}
               >
                 <h3>
@@ -166,28 +188,11 @@ const LostAndFoundPage = () => {
                 <p>
                   <strong>Date & Time:</strong> {entry.date} at {entry.time}
                 </p>
-
-                {/* Show image preview if the uploaded file is an image */}
-                {entry.fileDataUrl && (
-                  <img
-                    src={entry.fileDataUrl}
-                    alt="Uploaded preview"
-                    style={{
-                      maxWidth: "200px",
-                      maxHeight: "150px",
-                      marginTop: "10px",
-                      borderRadius: "6px",
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
-
-                {/* Show filename if present */}
-                {entry.uploadedFileName && (
-                  <p>
-                    <strong>File:</strong> {entry.uploadedFileName}
-                  </p>
-                )}
+                <p>
+                  <strong>Contact:</strong> {entry.contactInfo || "N/A"}
+                </p>
+                <button onClick={() => handleEdit(entry)}>Edit</button>
+                <button onClick={() => handleDelete(entry._id)}>Delete</button>
               </div>
             ))}
           </div>

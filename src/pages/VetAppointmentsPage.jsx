@@ -1,4 +1,3 @@
-// No visual changes — imports unchanged
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import TimePicker from 'react-time-picker';
@@ -7,7 +6,7 @@ import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 import "../css/VetAppointmentPage.css";
 
-// CRUD API functions
+
 import {
   getVetAppointments,
   addVetAppointment,
@@ -114,7 +113,7 @@ const VetAppointmentsPage = () => {
             <p><strong>Date:</strong> {appt.date}</p>
             <p><strong>Time:</strong> {appt.time}</p>
             <p><strong>Notes:</strong> {appt.notes}</p>
-            {/* 👇 only logic updated below — UI untouched */}
+            {}
             <button onClick={() => handleEdit(appt)}>Edit</button>
             <button onClick={() => handleDelete(appt._id)}>Delete</button>
           </div>

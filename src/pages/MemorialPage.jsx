@@ -1,38 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../css/VetAppointmentPage.css";
 
+import {
+  getMemorials,
+  addMemorial,
+  updateMemorial,
+  deleteMemorial,
+} from "../api/memorialApi";
+
 const MemorialPage = () => {
   const [entries, setEntries] = useState([]);
+  const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
-    name: "",
-    relation: "",
+    petName: "",
     message: "",
     dateOfPassing: null,
-    photo: null,
-    photoDataUrl: null,
+    imageUrl: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files && files.length > 0) {
-      const file = files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm((prev) => ({
-          ...prev,
-          photo: file,
-          photoDataUrl: reader.result, // base64 data URL for preview
-        }));
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setForm((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+  const fetchMemorials = async () => {
+    try {
+      const { data } = await getMemorials();
+      setEntries(data);
+    } catch (err) {
+      console.error("Error fetching memorials:", err);
     }
+  };
+
+  useEffect(() => {
+    fetchMemorials();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleDateChange = (date) => {
@@ -42,33 +48,54 @@ const MemorialPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.relation.trim() || !form.dateOfPassing) {
-      alert("Please fill in name, relation, and date of passing.");
+    if (!form.petName.trim() || !form.dateOfPassing) {
+      alert("Please fill in required fields.");
       return;
     }
-    const formattedDate = form.dateOfPassing.toISOString().split("T")[0];
 
-    const newEntry = {
-      id: Date.now(),
-      name: form.name,
-      relation: form.relation,
-      message: form.message,
-      dateOfPassing: formattedDate,
-      photoDataUrl: form.photoDataUrl, // Save base64 string for rendering
+    const payload = {
+      ...form,
+      dateOfPassing: form.dateOfPassing.toISOString().split("T")[0],
     };
 
-    setEntries((prev) => [newEntry, ...prev]);
+    try {
+      if (editingId) {
+        await updateMemorial(editingId, payload);
+      } else {
+        await addMemorial(payload);
+      }
+      setForm({
+        petName: "",
+        message: "",
+        dateOfPassing: null,
+        imageUrl: "",
+      });
+      setEditingId(null);
+      fetchMemorials();
+    } catch (err) {
+      console.error("Error saving memorial:", err);
+    }
+  };
 
+  const handleEdit = (entry) => {
     setForm({
-      name: "",
-      relation: "",
-      message: "",
-      dateOfPassing: null,
-      photo: null,
-      photoDataUrl: null,
+      petName: entry.petName,
+      message: entry.message,
+      dateOfPassing: new Date(entry.dateOfPassing),
+      imageUrl: entry.imageUrl || "",
     });
+    setEditingId(entry._id);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteMemorial(id);
+      fetchMemorials();
+    } catch (err) {
+      console.error("Error deleting memorial:", err);
+    }
   };
 
   return (
@@ -79,20 +106,10 @@ const MemorialPage = () => {
         <label>Name</label>
         <input
           type="text"
-          name="name"
-          value={form.name}
+          name="petName"
+          value={form.petName}
           onChange={handleChange}
-          placeholder="Name of the person/pet"
-          required
-        />
-
-        <label>Relation</label>
-        <input
-          type="text"
-          name="relation"
-          value={form.relation}
-          onChange={handleChange}
-          placeholder="Your relation to them"
+          placeholder="Pet's Name"
           required
         />
 
@@ -115,15 +132,16 @@ const MemorialPage = () => {
           required
         />
 
-        <label>Upload Photo (optional)</label>
+        <label>Image URL (optional)</label>
         <input
-          type="file"
-          name="photo"
-          accept=".jpg,.png"
+          type="text"
+          name="imageUrl"
+          value={form.imageUrl}
           onChange={handleChange}
+          placeholder="https://example.com/image.jpg"
         />
 
-        <button type="submit">Add Memorial</button>
+        <button type="submit">{editingId ? "Update" : "Add"} Memorial</button>
       </form>
 
       <section>
@@ -131,11 +149,11 @@ const MemorialPage = () => {
         {entries.length > 0 ? (
           <div className="appointment-list">
             {entries.map((entry) => (
-              <div key={entry.id} className="appointment-card memorial">
-                {entry.photoDataUrl && (
+              <div key={entry._id} className="appointment-card memorial">
+                {entry.imageUrl && (
                   <img
-                    src={entry.photoDataUrl}
-                    alt={`${entry.name} photo`}
+                    src={entry.imageUrl}
+                    alt={`${entry.petName} photo`}
                     style={{
                       width: "200px",
                       height: "auto",
@@ -145,14 +163,13 @@ const MemorialPage = () => {
                     }}
                   />
                 )}
-                <h3>{entry.name}</h3>
-                <p>
-                  <strong>Relation:</strong> {entry.relation}
-                </p>
+                <h3>{entry.petName}</h3>
                 {entry.message && <p><em>"{entry.message}"</em></p>}
                 <p>
                   <strong>Date of Passing:</strong> {entry.dateOfPassing}
                 </p>
+                <button onClick={() => handleEdit(entry)}>Edit</button>
+                <button onClick={() => handleDelete(entry._id)}>Delete</button>
               </div>
             ))}
           </div>

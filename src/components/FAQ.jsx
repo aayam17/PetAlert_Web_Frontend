@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import '../css/faq.css';  // Fixed relative path
+import '../css/faq.css';
 
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoPet from '../assets/logo_pet.png';
-import api from '../api/axiosInstance'; // ✅ import axios instance
+import api from '../api/axiosInstance';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,8 +31,8 @@ const Login = () => {
 
       const token = response.data.token;
       if (token) {
-        localStorage.setItem("token", token); // ✅ Save token to localStorage
-        navigate("/dashboard"); // ✅ Redirect
+        localStorage.setItem("token", token); 
+        navigate("/dashboard"); 
       } else {
         alert("No token received. Login failed.");
       }

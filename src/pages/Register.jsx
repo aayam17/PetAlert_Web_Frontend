@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import coverImage from "../assets/cover.jpg"; // Adjusted assuming this file is in src/components or similar
+import coverImage from "../assets/cover.jpg"; 
 
 const Register = () => {
   const [username, setUsername] = useState("");
