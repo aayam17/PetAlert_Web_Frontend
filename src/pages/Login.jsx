@@ -1,45 +1,44 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logoPet from '../assets/logo_pet.png'; 
-import api from '../api/axios'; // Correct named import for custom Axios instance
+import logoPet from '../assets/logo_pet.png';
+import api from '../api/axiosInstance'; // ✅ import axios instance
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const [apiError, setApiError] = useState("");
   const navigate = useNavigate();
 
   const validate = () => {
     const newErrors = {};
     if (!email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid";
-
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiError("");
-
     if (!validate()) return;
 
     try {
-      const response = await api.post('/login', { email, password });
-      console.log("Login success:", response.data);
-      // Example: save token/user info if needed
-      // localStorage.setItem("token", response.data.token);
-      navigate("/dashboard");
-    } catch (error) {
-      if (error.response?.data?.message) {
-        setApiError(error.response.data.message);
+      const response = await api.post("/auth/login", {
+        email,
+        password
+      });
+
+      const token = response.data.token;
+      if (token) {
+        localStorage.setItem("token", token); // ✅ Save token to localStorage
+        navigate("/dashboard"); // ✅ Redirect
       } else {
-        setApiError("Failed to login. Please try again.");
+        alert("No token received. Login failed.");
       }
+    } catch (err) {
+      console.error("Login failed:", err.response?.data || err.message);
+      alert("Invalid credentials. Please try again.");
     }
   };
 
@@ -167,13 +166,6 @@ const Login = () => {
           margin-top: -14px;
           margin-bottom: 18px;
         }
-        .api-error-text {
-          color: #b91c1c;
-          font-size: 0.95rem;
-          font-weight: 600;
-          margin-bottom: 18px;
-          text-align: center;
-        }
         button {
           padding: 16px 0;
           font-weight: 700;
@@ -242,7 +234,7 @@ const Login = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="Enter your username"
               className={errors.email ? "input-error" : ""}
               aria-describedby="email-error"
               required
@@ -263,8 +255,6 @@ const Login = () => {
               autoComplete="current-password"
             />
             {errors.password && <p id="password-error" className="error-text">{errors.password}</p>}
-
-            {apiError && <p className="api-error-text" role="alert">{apiError}</p>}
 
             <button type="submit" aria-label="Login to your account">Login</button>
           </form>

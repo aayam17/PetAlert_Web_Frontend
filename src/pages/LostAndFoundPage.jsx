@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
-import "react-clock/dist/Clock.css";
-import "../css/VetAppointmentPage.css";
-import { getLostAndFound, addLostAndFound } from "../api/lostAndFound";
+import "react-clock/dist/Clock.css"; 
+import "../css/VetAppointmentPage.css"; 
 
 const LostAndFoundPage = () => {
   const [entries, setEntries] = useState([]);
@@ -16,14 +15,8 @@ const LostAndFoundPage = () => {
     date: null,
     time: "",
     file: null,
-    fileDataUrl: null,
+    fileDataUrl: null, // <-- for preview image
   });
-
-  useEffect(() => {
-    getLostAndFound().then((res) => setEntries(res.data)).catch(err => {
-      console.error("Error fetching entries:", err);
-    });
-  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -35,7 +28,7 @@ const LostAndFoundPage = () => {
         setForm((prev) => ({
           ...prev,
           file: file,
-          fileDataUrl: reader.result,
+          fileDataUrl: reader.result, // base64 string for preview
         }));
       };
       reader.readAsDataURL(file);
@@ -48,59 +41,51 @@ const LostAndFoundPage = () => {
   };
 
   const handleDateChange = (date) => {
-    setForm((prev) => ({ ...prev, date }));
+    setForm((prev) => ({
+      ...prev,
+      date,
+    }));
   };
 
   const handleTimeChange = (time) => {
-    setForm((prev) => ({ ...prev, time }));
+    setForm((prev) => ({
+      ...prev,
+      time,
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { description, location, date, time, type } = form;
-
-    if (!description.trim() || !location.trim() || !date || !time) {
+    if (
+      !form.description.trim() ||
+      !form.location.trim() ||
+      !form.date ||
+      !form.time
+    ) {
       alert("Please fill in all required fields including date and time.");
       return;
     }
+    const formattedDate = form.date.toISOString().split("T")[0]; // YYYY-MM-DD
 
-    const formattedDate = date.toISOString().split("T")[0];
+    const newEntry = {
+      ...form,
+      id: Date.now(),
+      date: formattedDate,
+      uploadedFileName: form.file?.name || null,
+    };
 
-    try {
-      const newEntry = {
-        description,
-        location,
-        date: formattedDate,
-        time,
-        type,
-        contactInfo: "test@example.com", // You can update this based on auth
-      };
+    setEntries((prev) => [newEntry, ...prev]);
 
-      const response = await addLostAndFound(newEntry);
-      setEntries((prev) => [response.data, ...prev]);
-
-      setForm({
-        type: "Lost",
-        description: "",
-        location: "",
-        date: null,
-        time: "",
-        file: null,
-        fileDataUrl: null,
-      });
-    } catch (error) {
-      console.error("Failed to submit entry:", error);
-      alert("Submission failed.");
-    }
-  };
-
-  const sortedEntries = useMemo(() => {
-    return [...entries].sort((a, b) => {
-      const dateTimeA = new Date(`${a.date}T${a.time}`);
-      const dateTimeB = new Date(`${b.date}T${b.time}`);
-      return dateTimeB - dateTimeA;
+    setForm({
+      type: "Lost",
+      description: "",
+      location: "",
+      date: null,
+      time: "",
+      file: null,
+      fileDataUrl: null,
     });
-  }, [entries]);
+  };
 
   return (
     <div className="vet-appointment-page">
@@ -165,18 +150,44 @@ const LostAndFoundPage = () => {
 
       <section>
         <h2 className="upcoming-appointments">Entries</h2>
-        {sortedEntries.length > 0 ? (
+        {entries.length > 0 ? (
           <div className="appointment-list">
-            {sortedEntries.map((entry) => (
+            {entries.map((entry) => (
               <div
-                key={entry._id || entry.id}
+                key={entry.id}
                 className={`appointment-card ${entry.type.toLowerCase()}`}
               >
                 <h3>
                   [{entry.type}] {entry.description}
                 </h3>
-                <p><strong>Location:</strong> {entry.location}</p>
-                <p><strong>Date & Time:</strong> {entry.date} at {entry.time}</p>
+                <p>
+                  <strong>Location:</strong> {entry.location}
+                </p>
+                <p>
+                  <strong>Date & Time:</strong> {entry.date} at {entry.time}
+                </p>
+
+                {/* Show image preview if the uploaded file is an image */}
+                {entry.fileDataUrl && (
+                  <img
+                    src={entry.fileDataUrl}
+                    alt="Uploaded preview"
+                    style={{
+                      maxWidth: "200px",
+                      maxHeight: "150px",
+                      marginTop: "10px",
+                      borderRadius: "6px",
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+
+                {/* Show filename if present */}
+                {entry.uploadedFileName && (
+                  <p>
+                    <strong>File:</strong> {entry.uploadedFileName}
+                  </p>
+                )}
               </div>
             ))}
           </div>

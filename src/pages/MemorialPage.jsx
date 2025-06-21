@@ -1,24 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../css/VetAppointmentPage.css";
-import { getMemorials, addMemorial } from "../api/memorials";
 
 const MemorialPage = () => {
   const [entries, setEntries] = useState([]);
   const [form, setForm] = useState({
-    petName: "",
+    name: "",
+    relation: "",
     message: "",
     dateOfPassing: null,
     photo: null,
     photoDataUrl: null,
   });
-
-  useEffect(() => {
-    getMemorials().then((res) => setEntries(res.data)).catch(err => {
-      console.error("Error loading memorials:", err);
-    });
-  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -29,7 +23,7 @@ const MemorialPage = () => {
         setForm((prev) => ({
           ...prev,
           photo: file,
-          photoDataUrl: reader.result,
+          photoDataUrl: reader.result, // base64 data URL for preview
         }));
       };
       reader.readAsDataURL(file);
@@ -48,39 +42,33 @@ const MemorialPage = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { petName, message, dateOfPassing } = form;
-
-    if (!petName.trim() || !dateOfPassing) {
-      alert("Please fill in name and date of passing.");
+    if (!form.name.trim() || !form.relation.trim() || !form.dateOfPassing) {
+      alert("Please fill in name, relation, and date of passing.");
       return;
     }
+    const formattedDate = form.dateOfPassing.toISOString().split("T")[0];
 
-    const formattedDate = dateOfPassing.toISOString().split("T")[0];
+    const newEntry = {
+      id: Date.now(),
+      name: form.name,
+      relation: form.relation,
+      message: form.message,
+      dateOfPassing: formattedDate,
+      photoDataUrl: form.photoDataUrl, // Save base64 string for rendering
+    };
 
-    try {
-      const newEntry = {
-        petName,
-        message,
-        dateOfPassing: formattedDate,
-        imageUrl: "", // could be extended later
-      };
+    setEntries((prev) => [newEntry, ...prev]);
 
-      const response = await addMemorial(newEntry);
-      setEntries((prev) => [response.data, ...prev]);
-
-      setForm({
-        petName: "",
-        message: "",
-        dateOfPassing: null,
-        photo: null,
-        photoDataUrl: null,
-      });
-    } catch (err) {
-      console.error("Failed to add memorial:", err);
-      alert("Failed to add memorial entry.");
-    }
+    setForm({
+      name: "",
+      relation: "",
+      message: "",
+      dateOfPassing: null,
+      photo: null,
+      photoDataUrl: null,
+    });
   };
 
   return (
@@ -88,13 +76,23 @@ const MemorialPage = () => {
       <h2>Memorial Entries</h2>
 
       <form onSubmit={handleSubmit} className="appointment-form">
-        <label>Pet Name</label>
+        <label>Name</label>
         <input
           type="text"
-          name="petName"
-          value={form.petName}
+          name="name"
+          value={form.name}
           onChange={handleChange}
-          placeholder="Name of the pet"
+          placeholder="Name of the person/pet"
+          required
+        />
+
+        <label>Relation</label>
+        <input
+          type="text"
+          name="relation"
+          value={form.relation}
+          onChange={handleChange}
+          placeholder="Your relation to them"
           required
         />
 
@@ -133,11 +131,11 @@ const MemorialPage = () => {
         {entries.length > 0 ? (
           <div className="appointment-list">
             {entries.map((entry) => (
-              <div key={entry._id || entry.id} className="appointment-card memorial">
-                {form.photoDataUrl && (
+              <div key={entry.id} className="appointment-card memorial">
+                {entry.photoDataUrl && (
                   <img
-                    src={form.photoDataUrl}
-                    alt={`${entry.petName} photo`}
+                    src={entry.photoDataUrl}
+                    alt={`${entry.name} photo`}
                     style={{
                       width: "200px",
                       height: "auto",
@@ -147,9 +145,14 @@ const MemorialPage = () => {
                     }}
                   />
                 )}
-                <h3>{entry.petName}</h3>
+                <h3>{entry.name}</h3>
+                <p>
+                  <strong>Relation:</strong> {entry.relation}
+                </p>
                 {entry.message && <p><em>"{entry.message}"</em></p>}
-                <p><strong>Date of Passing:</strong> {entry.dateOfPassing}</p>
+                <p>
+                  <strong>Date of Passing:</strong> {entry.dateOfPassing}
+                </p>
               </div>
             ))}
           </div>
