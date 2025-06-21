@@ -1,0 +1,128 @@
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #f9fafb, #edf2f7);
+}
+
+.admin-sidebar {
+  width: 250px;
+  background: #2c3e50;
+  color: #fff;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.admin-logo {
+  color: #facc15;
+  font-size: 1.8rem;
+}
+
+.admin-nav {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-nav span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #34495e;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.admin-nav span:hover {
+  background: #3d566e;
+}
+
+.admin-logout {
+  background: #e74c3c;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-top: 2rem;
+}
+
+.admin-logout:hover {
+  background: #c0392b;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 2rem 3rem;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #2d3748;
+}
+
+.admin-header p {
+  color: #718096;
+  margin-top: 6px;
+}
+
+.admin-stats {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-card {
+  background: white;
+  padding: 1.2rem;
+  border-left: 6px solid #4f46e5;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.2s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-4px);
+}
+
+.admin-card.users { border-left-color: #3b82f6; }
+.admin-card.appointments { border-left-color: #f59e0b; }
+.admin-card.vaccinations { border-left-color: #10b981; }
+.admin-card.lost { border-left-color: #ef4444; }
+.admin-card.memorials { border-left-color: #8b5cf6; }
+
+.admin-footer {
+  margin-top: 3rem;
+  text-align: center;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.admin-footer svg {
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+  color: #3b82f6;
+}

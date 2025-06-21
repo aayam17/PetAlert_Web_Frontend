@@ -30,12 +30,16 @@ const Login = () => {
       });
 
       const token = response.data.token;
+      const user = response.data.user;
       if (token) {
-        localStorage.setItem("token", token); 
-        navigate("/dashboard"); 
-      } else {
-        alert("No token received. Login failed.");
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user)); // ✅ Save user
+      if (user.role === "admin") {
+        navigate("/admin");
+     } else {
+        navigate("/dashboard");
       }
+    }
     } catch (err) {
       console.error("Login failed:", err.response?.data || err.message);
       alert("Invalid credentials. Please try again.");

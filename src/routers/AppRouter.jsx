@@ -5,6 +5,7 @@ import Dashboard from '../pages/Dashboard';
 import AboutUs from '../components/AboutUs';   
 import FAQ from '../components/FAQ';
 import Contact from '../components/Contact';
+import AdminDashboard from '../pages/AdminDashboard';
 
 // Import service pages
 import VetAppointments from '../pages/VetAppointmentsPage';
@@ -22,6 +23,7 @@ const AppRouter = () => (
       <Route path="/about" element={<AboutUs />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/admin" element={<AdminDashboard />} />
       
       {/* New service pages */}
       <Route path="/vet-appointments" element={<VetAppointments />} />
