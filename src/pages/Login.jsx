@@ -33,7 +33,7 @@ const Login = () => {
       const user = response.data.user;
       if (token) {
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user)); // ✅ Save user
+      localStorage.setItem("user", JSON.stringify(user)); 
       if (user.role === "admin") {
         navigate("/admin");
      } else {
