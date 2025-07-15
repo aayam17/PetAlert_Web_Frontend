@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import coverImage from "../assets/cover.jpg"; 
+import coverImage from "../assets/cover.jpg";
+import api from "../api/axiosInstance";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -22,11 +23,32 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    console.log("Registering user:", { username, email, password });
-    navigate("/dashboard");
+
+    try {
+      const response = await api.post("/auth/register", {
+        username,
+        email,
+        password,
+      });
+
+      console.log("Registration success:", response.data);
+
+      alert("Registered successfully!");
+
+      // Optionally store token if desired:
+      // localStorage.setItem("token", response.data.token);
+      // localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration failed:", error.response?.data || error.message);
+      alert(
+        error.response?.data?.message || "Registration failed. Please try again."
+      );
+    }
   };
 
   return (
@@ -61,14 +83,13 @@ const Register = () => {
           box-shadow: 0 10px 30px rgba(0,0,0,0.1);
           max-width: 900px;
           width: 100%;
-          overflow: hidden; /* prevent overflow from image */
+          overflow: hidden;
         }
 
         .register-wrapper {
           flex: 1;
           padding: 48px 36px;
           max-width: 420px;
-          box-sizing: border-box;
           display: flex;
           flex-direction: column;
         }
@@ -79,7 +100,6 @@ const Register = () => {
           color: #222;
           margin-bottom: 32px;
           letter-spacing: 0.04em;
-          user-select: none;
           text-align: center;
         }
 
@@ -94,7 +114,6 @@ const Register = () => {
           font-size: 0.95rem;
           margin-bottom: 8px;
           color: #555;
-          user-select: none;
         }
 
         input {
@@ -103,7 +122,6 @@ const Register = () => {
           border: 1.8px solid #ccc;
           border-radius: 12px;
           transition: border-color 0.25s ease, box-shadow 0.25s ease;
-          outline-offset: 2px;
           margin-bottom: 18px;
         }
 
@@ -122,7 +140,6 @@ const Register = () => {
           font-size: 0.85rem;
           margin-top: -14px;
           margin-bottom: 18px;
-          user-select: none;
         }
 
         button {
@@ -135,13 +152,11 @@ const Register = () => {
           border-radius: 14px;
           cursor: pointer;
           transition: background 0.3s ease, box-shadow 0.3s ease;
-          user-select: none;
         }
 
         button:hover, button:focus-visible {
           background: linear-gradient(90deg, #4338ca, #2563eb);
           box-shadow: 0 8px 20px rgba(59,130,246,0.5);
-          outline: none;
         }
 
         .login-text {
@@ -149,7 +164,6 @@ const Register = () => {
           font-size: 0.9rem;
           color: #6b7280;
           text-align: center;
-          user-select: none;
         }
 
         .login-link {
@@ -157,13 +171,11 @@ const Register = () => {
           font-weight: 600;
           text-decoration: none;
           margin-left: 5px;
-          transition: color 0.25s ease;
         }
 
         .login-link:hover, .login-link:focus-visible {
           color: #4338ca;
           text-decoration: underline;
-          outline: none;
         }
 
         .register-image {
@@ -258,7 +270,11 @@ const Register = () => {
           </p>
         </section>
 
-        <aside className="register-image" aria-hidden="true" style={{ backgroundImage: `url(${coverImage})` }} />
+        <aside
+          className="register-image"
+          aria-hidden="true"
+          style={{ backgroundImage: `url(${coverImage})` }}
+        />
       </main>
     </>
   );

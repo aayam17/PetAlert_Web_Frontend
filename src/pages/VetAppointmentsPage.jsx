@@ -113,7 +113,6 @@ const VetAppointmentsPage = () => {
             <p><strong>Date:</strong> {appt.date}</p>
             <p><strong>Time:</strong> {appt.time}</p>
             <p><strong>Notes:</strong> {appt.notes}</p>
-            {}
             <button onClick={() => handleEdit(appt)}>Edit</button>
             <button onClick={() => handleDelete(appt._id)}>Delete</button>
           </div>

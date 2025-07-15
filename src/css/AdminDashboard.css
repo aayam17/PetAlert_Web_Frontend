@@ -1,7 +1,7 @@
 :root {
   --primary-bg: #f7f9fb;
   --sidebar-bg: #1f2937;
-  --sidebar-hover: #374151;
+  --sidebar-hover: rgba(99, 102, 241, 0.2);
   --accent-color: #6366f1;
   --danger-color: #ef4444;
   --text-color: #1f2937;
@@ -26,66 +26,102 @@ html, body {
 
 .admin-sidebar {
   width: 250px;
-  background: var(--sidebar-bg);
-  color: #fff;
+  background: linear-gradient(180deg, #1f2937, #111827);
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.4);
 }
 
 .admin-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.5rem;
-  font-weight: 600;
+  gap: 10px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3rem;
 }
 
 .admin-logo {
   color: var(--accent-color);
-  font-size: 2rem;
+  font-size: 2.4rem;
 }
 
 .admin-nav {
-  margin-top: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
 .admin-nav span {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-radius: 8px;
+  padding: 10px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  color: #d1d5db;
   font-weight: 500;
+  font-size: 1rem;
 }
 
 .admin-nav span:hover {
   background: var(--sidebar-hover);
+  color: #ffffff;
+}
+
+.admin-nav .nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-nav svg {
+  color: #9ca3af;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.admin-nav span:hover svg {
+  color: #ffffff;
+}
+
+.nav-count {
+  background: var(--accent-color);
+  color: #ffffff;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  min-width: 24px;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .admin-logout {
   background: var(--danger-color);
   border: none;
-  color: #fff;
-  padding: 10px 14px;
+  color: #ffffff;
+  padding: 12px 18px;
   border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
   margin-top: 2rem;
-  font-weight: 500;
-  transition: background 0.3s;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .admin-logout:hover {
   background: #b91c1c;
+  transform: scale(1.05);
 }
 
 .admin-content {
@@ -109,7 +145,7 @@ html, body {
 }
 
 .admin-list-section {
-  background: #fff;
+  background: #ffffff;
   border-radius: 12px;
   padding: 1.5rem 2rem;
   margin-bottom: 2.5rem;
@@ -138,7 +174,7 @@ html, body {
 
 .admin-table th {
   background: var(--table-header);
-  color: #fff;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -173,7 +209,7 @@ html, body {
 
 .admin-table button {
   background: var(--accent-color);
-  color: #fff;
+  color: #ffffff;
   border: none;
   padding: 6px 10px;
   border-radius: 6px;
@@ -194,3 +230,5 @@ html, body {
 .admin-table svg:hover {
   opacity: 0.8;
 }
+
+

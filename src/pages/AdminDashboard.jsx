@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/AdminDashboard.css";
 import {
@@ -37,12 +37,29 @@ import {
   updateMemorial,
 } from "../api/memorialApi";
 
+import api from "../api/axiosInstance";
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
-  // -----------------------
+  const [stats, setStats] = useState({
+    users: 0,
+    appointments: 0,
+    vaccinations: 0,
+    lost: 0,
+    memorials: 0,
+  });
+
+  const fetchStats = async () => {
+    try {
+      const res = await api.get("/admin/stats");
+      setStats(res.data);
+    } catch (err) {
+      console.error("Failed to fetch stats", err);
+    }
+  };
+
   // Vet Appointments
-  // -----------------------
   const [appointments, setAppointments] = useState([]);
   const [editAppointmentId, setEditAppointmentId] = useState(null);
   const [editAppointment, setEditAppointment] = useState({
@@ -76,9 +93,7 @@ const AdminDashboard = () => {
     fetchAppointments();
   };
 
-  // -----------------------
   // Vaccination Records
-  // -----------------------
   const [vaccinations, setVaccinations] = useState([]);
   const [editVaccinationId, setEditVaccinationId] = useState(null);
   const [editVaccination, setEditVaccination] = useState({
@@ -112,9 +127,7 @@ const AdminDashboard = () => {
     fetchVaccinations();
   };
 
-  // -----------------------
   // Lost and Found
-  // -----------------------
   const [lostItems, setLostItems] = useState([]);
   const [editLostId, setEditLostId] = useState(null);
   const [editLost, setEditLost] = useState({
@@ -154,9 +167,7 @@ const AdminDashboard = () => {
     fetchLostAndFound();
   };
 
-  // -----------------------
   // Memorials
-  // -----------------------
   const [memorials, setMemorials] = useState([]);
   const [editMemorialId, setEditMemorialId] = useState(null);
   const [editMemorial, setEditMemorial] = useState({
@@ -192,20 +203,31 @@ const AdminDashboard = () => {
     fetchMemorials();
   };
 
-  // -----------------------
-  // Fetch all on mount
-  // -----------------------
   useEffect(() => {
     fetchAppointments();
     fetchVaccinations();
     fetchLostAndFound();
     fetchMemorials();
+    fetchStats();
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
+  };
+
+  // Refs for scrolling
+  const appointmentRef = useRef(null);
+  const vaccinationRef = useRef(null);
+  const lostFoundRef = useRef(null);
+  const memorialRef = useRef(null);
+
+  const scrollToSection = (ref) => {
+    ref.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
@@ -216,10 +238,34 @@ const AdminDashboard = () => {
           <h2>PetAlert Admin</h2>
         </div>
         <nav className="admin-nav">
-          <span><FaPaw /> Appointments</span>
-          <span><FaSyringe /> Vaccinations</span>
-          <span><FaSearchLocation /> Lost & Found</span>
-          <span><FaSkull /> Memorials</span>
+          <span onClick={() => scrollToSection(appointmentRef)}>
+            <div className="nav-left">
+              <FaPaw />
+              <span>Appointments</span>
+            </div>
+            <span className="nav-count">{stats.appointments}</span>
+          </span>
+          <span onClick={() => scrollToSection(vaccinationRef)}>
+            <div className="nav-left">
+              <FaSyringe />
+              <span>Vaccinations</span>
+            </div>
+            <span className="nav-count">{stats.vaccinations}</span>
+          </span>
+          <span onClick={() => scrollToSection(lostFoundRef)}>
+            <div className="nav-left">
+              <FaSearchLocation />
+              <span>Lost & Found</span>
+            </div>
+            <span className="nav-count">{stats.lost}</span>
+          </span>
+          <span onClick={() => scrollToSection(memorialRef)}>
+            <div className="nav-left">
+              <FaSkull />
+              <span>Memorials</span>
+            </div>
+            <span className="nav-count">{stats.memorials}</span>
+          </span>
         </nav>
         <button onClick={handleLogout} className="admin-logout">
           <FaSignOutAlt /> Logout
@@ -229,10 +275,13 @@ const AdminDashboard = () => {
       <main className="admin-content">
         <header className="admin-header">
           <h1>Admin Dashboard</h1>
-          <p>Manage pet care operations below.</p>
+          <p style={{ color: "#1f2937", fontSize: "1.1rem", marginTop: "8px" }}>
+            Manage pet care operations below.
+          </p>
         </header>
 
         <Section
+          ref={appointmentRef}
           title="Vet Appointments"
           items={appointments}
           fields={["date", "time", "notes"]}
@@ -246,6 +295,7 @@ const AdminDashboard = () => {
         />
 
         <Section
+          ref={vaccinationRef}
           title="Vaccination Records"
           items={vaccinations}
           fields={["vaccine", "notes", "date"]}
@@ -259,6 +309,7 @@ const AdminDashboard = () => {
         />
 
         <Section
+          ref={lostFoundRef}
           title="Lost and Found"
           items={lostItems}
           fields={["type", "description", "location", "date", "time", "contactInfo"]}
@@ -272,6 +323,7 @@ const AdminDashboard = () => {
         />
 
         <Section
+          ref={memorialRef}
           title="Memorials"
           items={memorials}
           fields={["petName", "message", "dateOfPassing", "imageUrl"]}
@@ -295,82 +347,87 @@ const AdminDashboard = () => {
 
 export default AdminDashboard;
 
-// Reusable Section Component
-const Section = ({
-  title,
-  items,
-  fields,
-  createdByField,
-  editId,
-  editForm,
-  setEditForm,
-  onEdit,
-  onSave,
-  onDelete,
-}) => {
-  return (
-    <section className="admin-list-section">
-      <h2>{title}</h2>
-      <table className="admin-table">
-        <thead>
-          <tr>
-            {fields.map((f) => (
-              <th key={f}>{f}</th>
-            ))}
-            <th>Created By</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
-            <tr key={item._id}>
-              {fields.map((field) => (
-                <td key={field}>
+// Section Component with ref support
+const Section = forwardRef(
+  (
+    {
+      title,
+      items,
+      fields,
+      createdByField,
+      editId,
+      editForm,
+      setEditForm,
+      onEdit,
+      onSave,
+      onDelete,
+    },
+    ref
+  ) => {
+    return (
+      <section ref={ref} className="admin-list-section">
+        <h2>{title}</h2>
+        <table className="admin-table">
+          <thead>
+            <tr>
+              {fields.map((f) => (
+                <th key={f}>{f}</th>
+              ))}
+              <th>Created By</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <tr key={item._id}>
+                {fields.map((field) => (
+                  <td key={field}>
+                    {editId === item._id ? (
+                      <input
+                        value={editForm[field] || ""}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            [field]: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      item[field]
+                    )}
+                  </td>
+                ))}
+                <td>
+                  {item[createdByField]?.username}
+                  <br />
+                  <small>{item[createdByField]?.email}</small>
+                </td>
+                <td>
                   {editId === item._id ? (
-                    <input
-                      value={editForm[field] || ""}
-                      onChange={(e) =>
-                        setEditForm({
-                          ...editForm,
-                          [field]: e.target.value,
-                        })
-                      }
-                    />
+                    <button onClick={onSave}>Save</button>
                   ) : (
-                    item[field]
+                    <>
+                      <FaEdit
+                        onClick={() => onEdit(item)}
+                        style={{
+                          color: "var(--accent-color)",
+                          marginRight: "10px",
+                        }}
+                      />
+                      <FaTrash
+                        onClick={() => onDelete(item._id)}
+                        style={{
+                          color: "var(--danger-color)",
+                        }}
+                      />
+                    </>
                   )}
                 </td>
-              ))}
-              <td>
-                {item[createdByField]?.username}
-                <br />
-                <small>{item[createdByField]?.email}</small>
-              </td>
-              <td>
-                {editId === item._id ? (
-                  <button onClick={onSave}>Save</button>
-                ) : (
-                  <>
-                    <FaEdit
-                      onClick={() => onEdit(item)}
-                      style={{
-                        color: "var(--accent-color)",
-                        marginRight: "10px"
-                      }}
-                    />
-                    <FaTrash
-                      onClick={() => onDelete(item._id)}
-                      style={{
-                        color: "var(--danger-color)"
-                      }}
-                    />
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
-  );
-};
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    );
+  }
+);
