@@ -78,10 +78,11 @@ const Dashboard = () => {
             A four-legged word <span className="highlight">LOVE</span> and <span className="highlight">CARING</span> is how we show it.
           </h2>
           <p className="hero-subtitle">Providing expert pet care services online.</p>
-          <button className="cta-button">
-            <FaPaw style={{ marginRight: '8px' }} />
-            Request Services
-          </button>
+        <Link to="/community-board" className="cta-button">
+           <FaPaw style={{ marginRight: '8px' }} />
+        Community Board
+        </Link>
+
         </section>
 
         {/* Services Section */}

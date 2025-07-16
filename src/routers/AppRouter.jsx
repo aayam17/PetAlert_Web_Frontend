@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
+import CommunityBoardPage from "../pages/CommunityBoardPage";
 import AboutUs from '../components/AboutUs';   
 import FAQ from '../components/FAQ';
 import Contact from '../components/Contact';
@@ -20,6 +21,7 @@ const AppRouter = () => (
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/community-board" element={<CommunityBoardPage />} />
       <Route path="/about" element={<AboutUs />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/contact" element={<Contact />} />
