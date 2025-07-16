@@ -11,51 +11,51 @@
 .faq-section {
   max-width: 900px;
   margin: 4rem auto;
-  padding: 2rem;
-  background: #fff;
+  padding: 3rem;
+  background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', sans-serif;
+  color: #2e3a59;
   user-select: none;
 }
 
 /* FAQ Header */
 .faq-header {
   text-align: center;
-  padding: 3rem 0 2rem;
+  padding-bottom: 2rem;
 }
 
 .faq-title {
   font-size: 2.8rem;
-  font-weight: 900;
+  font-weight: 800;
   color: #2e3a59;
-  margin-bottom: 0.6rem;
-  letter-spacing: 1.4px;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
 }
 
 .faq-subtitle {
-  font-size: 1.1rem;
-  color: #5a5f6e;
+  font-size: 1.2rem;
+  color: #6b7280;
   font-weight: 500;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 /* FAQ List */
 .faq-list {
-  margin-top: 1.8rem;
-  border-top: 2px solid #f4a261;
+  margin-top: 2rem;
+  border-top: 2px solid #f97316;
 }
 
 /* FAQ Item */
 .faq-item {
-  border-bottom: 1px solid #eee;
-  padding: 1.8rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.6rem 0;
   transition: background-color 0.3s ease;
 }
 
 .faq-item.active {
-  background-color: #f9f6f3;
+  background-color: #fef9f6;
 }
 
 /* Question Button */
@@ -64,7 +64,7 @@
   border: none;
   width: 100%;
   text-align: left;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: #2e3a59;
   cursor: pointer;
@@ -78,15 +78,15 @@
 
 .faq-question:hover,
 .faq-question:focus {
-  color: #f4a261;
+  color: #f97316;
   outline: none;
 }
 
 /* Arrow Icon */
 .arrow {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
+  color: #f97316;
   transition: transform 0.3s ease;
-  color: #f4a261;
 }
 
 /* Rotate Arrow When Active */
@@ -96,16 +96,16 @@
 
 /* Answer Text */
 .faq-answer {
-  margin-top: 1rem;
+  margin-top: 0.8rem;
   font-size: 1.1rem;
-  color: #5a5f6e;
-  line-height: 1.6;
+  color: #4b5563;
+  line-height: 1.65;
   user-select: text;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease, padding 0.4s ease;
-  padding-left: 1rem;
-  border-left: 4px solid #f4a261;
+  padding-left: 1.2rem;
+  border-left: 4px solid #f97316;
 }
 
 /* Show Answer When Active */

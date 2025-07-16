@@ -11,68 +11,72 @@
 .about-section {
   max-width: 1200px;
   margin: 4rem auto;
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  font-family: 'Merriweather', serif;
-  color: #333;
-  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: #2e3a59;
+  padding: 3rem 3rem 4rem 3rem;
 }
 
 /* Hero Section */
 .about-hero {
-  background: linear-gradient(135deg, #f4a261, #e76f51);
-  color: white;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  color: #ffffff;
   text-align: center;
-  padding: 5rem 2rem;
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  padding: 4rem 2rem;
+  font-size: 2.8rem;
+  font-weight: 800;
+  text-shadow: none;
+  border-radius: 16px 16px 0 0;
 }
 
 /* Main Title */
 .about-title {
-  font-size: 3.8rem;
-  font-weight: 900;
-  margin-bottom: 0.3rem;
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
   user-select: none;
-  text-shadow: 0 3px 15px rgba(0, 0, 0, 0.25);
+  color: #ffffff;
+  text-shadow: none;
 }
 
 /* Highlight Part of the Title */
 .about-title span {
-  color: #2e3a59;
-  text-shadow: 0 2px 10px rgba(46, 58, 89, 0.9);
+  color: #ffffff;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
 }
 
 /* Tagline Below the Title */
 .about-tagline {
   font-size: 1.4rem;
   font-weight: 500;
-  opacity: 0.9;
+  opacity: 0.95;
   margin-top: 0.5rem;
-  font-style: italic;
-  letter-spacing: 0.3px;
+  font-style: normal;
+  letter-spacing: 0.5px;
+  color: #fefefe;
 }
 
 /* Text Content Area */
 .about-content {
-  padding: 3.5rem 3rem 4rem 3rem;
-  line-height: 1.75;
-  font-size: 1.15rem;
-  color: #4b4f65;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  color: #4b5563;
   user-select: text;
+  margin-top: 3rem;
 }
 
 /* Paragraph Spacing */
 .about-content p {
-  margin-bottom: 1.8rem;
+  margin-bottom: 1.5rem;
 }
 
 /* Highlight Important Words */
 .about-content strong {
-  color: #f4a261;
+  color: #f97316;
   font-weight: 700;
-  text-shadow: 0 1px 5px rgba(244, 162, 97, 0.6);
+  text-shadow: none;
 }
