@@ -6,12 +6,13 @@ html, body {
 }
 
 body {
-  background-color: #dff3fa;
+  background-color: #fff5f3; /* soft peach background */
   font-family: 'Georgia', serif;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  color: #4d2c26;
 }
 
 /* LostAndFoundPage Container */
@@ -20,10 +21,10 @@ body {
   width: 90%;
   margin: 0 auto;
   padding: 2rem 2.5rem;
-  background-color: #f0f8fc;
+  background-color: #fff0ec;
   border-radius: 12px;
-  box-shadow: 0 3px 15px rgba(100, 170, 200, 0.15);
-  color: #2c546c;
+  box-shadow: 0 3px 15px rgba(249, 126, 114, 0.2);
+  color: #4d2c26;
 }
 
 /* Title */
@@ -32,7 +33,7 @@ body {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #347fa5;
+  color: #d14434;
   letter-spacing: 1.2px;
 }
 
@@ -47,18 +48,18 @@ body {
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.3rem;
-  color: #2c546c;
+  color: #4d2c26;
 }
 
 .lost-and-found-form input[type="text"],
 .lost-and-found-form textarea,
 .lost-and-found-form select {
   padding: 0.75rem 1rem;
-  border: 1px solid #7bbad8;
+  border: 1px solid #f0b3a3;
   border-radius: 8px;
   background-color: #ffffff;
   font-size: 1rem;
-  color: #2c546c;
+  color: #4d2c26;
   transition: border-color 0.3s ease;
   font-family: 'Georgia', serif;
 }
@@ -66,7 +67,7 @@ body {
 .lost-and-found-form input[type="text"]:focus,
 .lost-and-found-form textarea:focus,
 .lost-and-found-form select:focus {
-  border-color: #347fa5;
+  border-color: #f97e72;
   outline: none;
 }
 
@@ -74,19 +75,19 @@ body {
   resize: vertical;
   min-height: 80px;
   font-style: italic;
-  color: #347fa5;
+  color: #d14434;
 }
 
 .lost-and-found-form input[type="file"] {
   font-size: 0.95rem;
-  color: #347fa5;
+  color: #d14434;
   background-color: #ffffff;
   border: none;
 }
 
 .lost-and-found-form button {
   padding: 0.75rem 1.5rem;
-  background-color: #429edc;
+  background-color: #f97e72;
   border: none;
   border-radius: 30px;
   color: #fff;
@@ -100,7 +101,7 @@ body {
 }
 
 .lost-and-found-form button:hover {
-  background-color: #2c6e9c;
+  background-color: #d14434;
 }
 
 /* Date picker custom styles */
@@ -111,7 +112,7 @@ body {
 }
 
 .date-picker-button {
-  background-color: #429edc;
+  background-color: #f97e72;
   border: none;
   color: #fff;
   padding: 0.5rem 1rem;
@@ -122,12 +123,12 @@ body {
 }
 
 .date-picker-button:hover {
-  background-color: #2c6e9c;
+  background-color: #d14434;
 }
 
 .date-display {
   font-weight: 600;
-  color: #2c546c;
+  color: #4d2c26;
 }
 
 /* Lost and Found entries list */
@@ -139,13 +140,13 @@ body {
 }
 
 .entry-card {
-  background-color: #e8f7fd;
-  border-left: 6px solid #347fa5;
+  background-color: #fff0ec;
+  border-left: 6px solid #d14434;
   padding: 1.25rem 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 1px 10px rgba(52, 127, 165, 0.12);
+  box-shadow: 0 1px 10px rgba(249, 126, 114, 0.2);
   font-family: 'Georgia', serif;
-  color: #2c546c;
+  color: #4d2c26;
   line-height: 1.4;
 }
 
@@ -153,7 +154,7 @@ body {
   margin: 0 0 0.5rem 0;
   font-weight: 700;
   font-style: italic;
-  color: #429edc;
+  color: #f97e72;
 }
 
 .entry-card p {
@@ -162,7 +163,7 @@ body {
 }
 
 .entry-card p strong {
-  color: #347fa5;
+  color: #d14434;
 }
 
 .entry-card img {
@@ -181,7 +182,7 @@ body {
 }
 
 .entry-card .card-actions button {
-  background: #429edc;
+  background: #f97e72;
   border: none;
   color: #fff;
   padding: 0.5rem 1rem;
@@ -194,7 +195,7 @@ body {
 }
 
 .entry-card .card-actions button:hover {
-  background: #2c6e9c;
+  background: #d14434;
 }
 
 @media (max-width: 480px) {
@@ -240,26 +241,26 @@ body {
   font-family: 'Georgia', serif;
   font-size: 16px;
   background: #ffffff;
-  color: #2c546c;
-  border: 1px solid #7bbad8;
+  color: #4d2c26;
+  border: 1px solid #f0b3a3;
   border-radius: 8px;
   padding: 10px;
-  box-shadow: 0 3px 15px rgba(52, 127, 165, 0.15);
+  box-shadow: 0 3px 15px rgba(249, 126, 114, 0.15);
 }
 
 .react-datepicker__day--selected,
 .react-datepicker__day--keyboard-selected {
-  background-color: #429edc;
+  background-color: #f97e72;
   color: #ffffff;
 }
 
 .react-datepicker__header {
-  background-color: #f0f8fc;
-  border-bottom: 1px solid #7bbad8;
+  background-color: #fff0ec;
+  border-bottom: 1px solid #f0b3a3;
 }
 
 .react-datepicker__day:hover {
-  background-color: #dff3fa;
+  background-color: #fde0db;
 }
 
 /* Modal overlay animations */
