@@ -1,321 +1,273 @@
+/* Reset and page styling */
 html, body {
-  height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #e0eafc, #cfdef3);
+  height: 100%;
 }
 
-.vet-appointment-page {
-  width: 100%;
+body {
+  background-color: #dff3fa;
+  font-family: 'Georgia', serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-height: 100vh;
-  padding: 3rem 2rem;
-  box-sizing: border-box;
+}
+
+/* VetAppointmentPage Container */
+.vet-appointment-page {
+  max-width: 650px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  background-color: #f0f8fc;
+  border-radius: 12px;
+  box-shadow: 0 3px 15px rgba(100, 170, 200, 0.15);
+  color: #2c546c;
+}
+
+/* Title */
+.vet-appointment-page h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #347fa5;
+  letter-spacing: 1.2px;
+}
+
+/* Form styling */
+.appointment-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.appointment-section-heading {
-  font-size: 2.8rem;
-  font-weight: 800;
-  color: #2e3a59;
-  margin-bottom: 2.5rem;
-  text-align: center;
-}
-
-/* FORM CARD */
-.appointment-form {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 2.5rem;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-  max-width: 850px;
-  width: 100%;
-  margin-bottom: 4rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 .appointment-form label {
   font-weight: 600;
-  color: #2e3a59;
   font-size: 1rem;
+  margin-bottom: 0.3rem;
+  color: #2c546c;
 }
 
-.appointment-form input,
+.appointment-form input[type="text"],
+.appointment-form textarea,
 .appointment-form select,
-.appointment-form textarea {
-  width: 100%;
-  padding: 1rem;
+.custom-datepicker,
+.custom-timepicker {
+  padding: 0.75rem 1rem;
+  border: 1px solid #7bbad8;
+  border-radius: 8px;
+  background-color: #ffffff;
   font-size: 1rem;
-  border: 1.5px solid #ccc;
-  border-radius: 12px;
-  box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
+  color: #2c546c;
+  transition: border-color 0.3s ease;
+  font-family: 'Georgia', serif;
 }
 
-.appointment-form input:focus,
+.appointment-form input[type="text"]:focus,
+.appointment-form textarea:focus,
 .appointment-form select:focus,
-.appointment-form textarea:focus {
-  border-color: #4f46e5;
+.custom-datepicker:focus,
+.custom-timepicker:focus {
+  border-color: #347fa5;
   outline: none;
-  box-shadow: 0 0 8px rgba(79, 70, 229, 0.4);
 }
 
 .appointment-form textarea {
-  grid-column: span 2;
   resize: vertical;
-  min-height: 120px;
+  min-height: 80px;
+  font-style: italic;
+  color: #347fa5;
+}
+
+.appointment-form input[type="file"] {
+  font-size: 0.95rem;
+  color: #347fa5;
+  background-color: #ffffff;
+  border: none;
 }
 
 .appointment-form button {
-  grid-column: span 2;
-  background: linear-gradient(90deg, #4f46e5, #3b82f6);
-  color: white;
-  padding: 1rem;
-  font-weight: 700;
-  font-size: 1.2rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #429edc;
   border: none;
-  border-radius: 12px;
+  border-radius: 30px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  align-self: center;
+  width: 160px;
+  transition: background-color 0.3s ease;
+  font-family: 'Georgia', serif;
 }
 
 .appointment-form button:hover {
-  background: linear-gradient(90deg, #4338ca, #2563eb);
-  transform: translateY(-2px);
+  background-color: #2c6e9c;
 }
 
-/* APPOINTMENT CARDS */
+/* Date picker custom styles */
+.date-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.date-picker-button {
+  background-color: #429edc;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-weight: 600;
+}
+
+.date-picker-button:hover {
+  background-color: #2c6e9c;
+}
+
+.date-display {
+  font-weight: 600;
+  color: #2c546c;
+}
+
+/* Vet Appointment entries list */
 .appointment-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-  width: 100%;
-  max-width: 1300px;
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .appointment-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease;
+  background-color: #e8f7fd;
+  border-left: 6px solid #347fa5;
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 10px rgba(52, 127, 165, 0.12);
+  font-family: 'Georgia', serif;
+  color: #2c546c;
+  line-height: 1.4;
 }
 
-.appointment-card:hover {
-  transform: translateY(-8px);
-}
-
-.card-header {
-  background: linear-gradient(135deg, #4f46e5, #3b82f6);
-  color: white;
-  padding: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-header h3 {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.4rem;
+.appointment-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  font-style: italic;
+  color: #429edc;
 }
 
 .appointment-card p {
-  padding: 0.7rem 1.5rem;
-  margin: 0;
-  color: #2e3a59;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 1rem;
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
 }
 
-.status {
-  display: inline-block;
-  padding: 0.4em 0.9em;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: #fff;
-  text-transform: uppercase;
+.appointment-card p strong {
+  color: #347fa5;
 }
 
-.status.scheduled { background-color: #3b82f6; }
-.status.completed { background-color: #16a34a; }
-.status.canceled { background-color: #ef4444; }
-
-.card-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 1rem 1.5rem;
-  gap: 0.6rem;
-}
-
-.card-actions button {
-  background: #4f46e5;
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
+/* Updated image preview style */
+.appointment-card img {
+  display: block;
+  width: 120px;
+  height: 150px;
+  object-fit: cover;
   border-radius: 8px;
-  cursor: pointer;
+  margin: 0 auto 1rem auto;
+}
+
+.appointment-card .card-actions {
+  margin-top: 1rem;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 10px;
+}
+
+.appointment-card .card-actions button {
+  background: #429edc;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: 'Georgia', serif;
   font-size: 0.9rem;
-  transition: background 0.3s ease;
+  font-weight: 600;
 }
 
-.card-actions button:hover {
-  background: #4338ca;
-  transform: translateY(-2px);
+.appointment-card .card-actions button:hover {
+  background: #2c6e9c;
 }
 
-/* DATE & TIME PICKERS - Professional Look */
-
-.custom-datepicker,
-.react-datepicker-wrapper input,
-.custom-timepicker,
-.react-time-picker__wrapper {
-  width: 100% !important;
-  background-color: #ffffff !important;
-  color: #333 !important;
-  border: 1.5px solid #ccc !important;
-  border-radius: 12px !important;
-  padding: 1rem !important;
-  font-size: 1rem !important;
-  box-sizing: border-box !important;
-  transition: all 0.3s ease !important;
+@media (max-width: 480px) {
+  .vet-appointment-page {
+    padding: 1.5rem 1rem;
+  }
+  .appointment-form button {
+    width: 100%;
+  }
 }
 
-.react-datepicker-wrapper input:focus,
-.react-time-picker__wrapper input:focus,
-.react-time-picker__inputGroup input:focus {
-  border-color: #4f46e5 !important;
-  outline: none !important;
-  box-shadow: 0 0 8px rgba(79, 70, 229, 0.3) !important;
+/* Modal overlay background */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
-.react-time-picker__inputGroup {
-  border: none !important;
-  background: none !important;
+.modal-content {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 10000;
 }
 
-.react-time-picker__inputGroup input {
-  background-color: transparent !important;
-  border: none !important;
-  color: #333 !important;
-  font-size: 1rem !important;
-  width: auto !important;
-  padding: 0 !important;
+.datepicker-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
 }
-
-.react-time-picker__clear-button {
-  display: none !important;
-}
-
-.react-datepicker-popper,
-.react-datepicker {
-  background-color: #ffffff !important;
-  color: #333 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
-  z-index: 9999 !important;
-}
-
-.react-time-picker__wrapper {
-  z-index: 9999 !important;
-}
-
-/* Bigger clock dial for mobile */
-.react-clock {
-  width: 300px !important;
-  height: 300px !important;
-  max-width: 90vw;
-  max-height: 90vw;
-}
-
-.react-clock__face {
-  transform: scale(1.2);
-}
-
-/* ---------- DATE PICKER CUSTOMIZATION ---------- */
 
 .react-datepicker {
-  font-family: 'Inter', sans-serif !important;
-  border-radius: 12px !important;
-  border: none !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25) !important;
-  background-color: #ffffff !important;
-  padding: 0.8rem !important;
-}
-
-.react-datepicker__header {
-  background: linear-gradient(135deg, #4f46e5, #3b82f6) !important;
-  color: #ffffff !important;
-  border-bottom: none !important;
-  border-radius: 8px 8px 0 0 !important;
-  padding: 1rem !important;
-}
-
-.react-datepicker__current-month {
-  font-weight: 600 !important;
-  font-size: 1.1rem !important;
-  color: #ffffff !important;
-}
-
-.react-datepicker__day-name,
-.react-datepicker__day {
-  color: #2e3a59 !important;
-  font-size: 0.95rem !important;
-  width: 2.4rem !important;
-  line-height: 2.4rem !important;
-  margin: 0.2rem !important;
-}
-
-.react-datepicker__day:hover {
-  background-color: rgba(79, 70, 229, 0.2) !important;
-  border-radius: 50% !important;
+  font-family: 'Georgia', serif;
+  font-size: 16px;
+  background: #ffffff;
+  color: #2c546c;
+  border: 1px solid #7bbad8;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 3px 15px rgba(52, 127, 165, 0.15);
 }
 
 .react-datepicker__day--selected,
 .react-datepicker__day--keyboard-selected {
-  background: #4f46e5 !important;
-  color: #fff !important;
-  border-radius: 50% !important;
+  background-color: #429edc;
+  color: #ffffff;
 }
 
-.react-datepicker__navigation-icon::before {
-  border-color: #ffffff !important;
-  border-width: 2px 2px 0 0 !important;
+.react-datepicker__header {
+  background-color: #f0f8fc;
+  border-bottom: 1px solid #7bbad8;
 }
 
-.react-datepicker__day--today {
-  border: 1px solid #4f46e5 !important;
-  color: #4f46e5 !important;
-  font-weight: 600 !important;
+.react-datepicker__day:hover {
+  background-color: #dff3fa;
 }
 
-.react-datepicker__triangle {
-  display: none !important;
-}
-
-.react-datepicker-popper {
-  z-index: 9999 !important;
-  margin-top: 10px !important;
-}
-
-/* ---------- MODAL ANIMATIONS ---------- */
-
+/* Modal overlay animations */
 .modal-overlay {
   opacity: 0;
   transition: opacity 300ms ease-in-out;
@@ -339,6 +291,7 @@ html, body {
   max-width: 500px;
   width: 90%;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  z-index: 10000;
 }
 
 .modal-content--after-open {
@@ -360,4 +313,11 @@ html, body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+}
+
+.datepicker-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 350px;
 }

@@ -165,15 +165,7 @@ body {
   color: #347fa5;
 }
 
-.image-preview {
-  display: block;
-  width: 200px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin: 1rem auto;
-}
-
+/* ✅ UPDATED IMAGE STYLE - PASSPORT SIZE */
 .memorial-card img {
   display: block;
   width: 120px;
@@ -182,7 +174,6 @@ body {
   border-radius: 8px;
   margin: 0 auto 1rem auto;
 }
-
 
 .memorial-card .card-actions {
   margin-top: 1rem;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import "../css/VaccinationRecordsPage.css";
@@ -10,10 +11,18 @@ import {
   deleteVaccinationRecord,
 } from '../api/vaccinationApi';
 
+Modal.setAppElement("#root");
+
 const VaccinationRecordsPage = () => {
   const [records, setRecords] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ date: null, vaccine: '', notes: '' });
+  const [dateModalOpen, setDateModalOpen] = useState(false);
+
+  const [form, setForm] = useState({
+    date: null,
+    vaccine: '',
+    notes: ''
+  });
 
   const fetchRecords = async () => {
     try {
@@ -29,7 +38,11 @@ const VaccinationRecordsPage = () => {
   }, []);
 
   const handleDateChange = (date) => {
-    setForm(prev => ({ ...prev, date }));
+    setForm((prev) => ({
+      ...prev,
+      date
+    }));
+    setDateModalOpen(false);
   };
 
   const handleChange = (e) => {
@@ -88,14 +101,24 @@ const VaccinationRecordsPage = () => {
 
       <form onSubmit={handleSubmit} className="vaccination-form">
         <label>Date</label>
-        <DatePicker
-          selected={form.date}
-          onChange={handleDateChange}
-          className="custom-datepicker"
-          placeholderText="Select vaccination date"
-          dateFormat="yyyy-MM-dd"
-          required
-        />
+        <div className="date-picker-row">
+          <span className="date-display">
+            {form.date
+              ? form.date.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })
+              : "No date selected"}
+          </span>
+          <button
+            type="button"
+            onClick={() => setDateModalOpen(true)}
+            className="date-picker-button"
+          >
+            Pick Date
+          </button>
+        </div>
 
         <label>Vaccine Name</label>
         <input
@@ -119,6 +142,30 @@ const VaccinationRecordsPage = () => {
         <button type="submit">{editingId ? 'Update' : 'Add'} Record</button>
       </form>
 
+      <Modal
+        isOpen={dateModalOpen}
+        onRequestClose={() => setDateModalOpen(false)}
+        className={{
+          base: "modal-content",
+          afterOpen: "modal-content--after-open",
+          beforeClose: "modal-content--before-close",
+        }}
+        overlayClassName={{
+          base: "modal-overlay",
+          afterOpen: "modal-overlay--after-open",
+          beforeClose: "modal-overlay--before-close",
+        }}
+        closeTimeoutMS={300}
+      >
+        <div className="datepicker-wrapper">
+          <DatePicker
+            selected={form.date}
+            onChange={handleDateChange}
+            inline
+          />
+        </div>
+      </Modal>
+
       <section>
         <h2 className="record-list-heading">Vaccination History</h2>
         {records.length > 0 ? (
@@ -126,9 +173,15 @@ const VaccinationRecordsPage = () => {
             {records.map(record => (
               <div key={record._id} className="record-card">
                 <h3>{record.date} - {record.vaccine}</h3>
-                {record.notes && <p><strong>Notes:</strong> {record.notes}</p>}
-                <button onClick={() => handleEdit(record)}>Edit</button>
-                <button onClick={() => handleDelete(record._id)}>Delete</button>
+                {record.notes && (
+                  <p>
+                    <strong>Notes:</strong> {record.notes}
+                  </p>
+                )}
+                <div className="card-actions">
+                  <button onClick={() => handleEdit(record)}>Edit</button>
+                  <button onClick={() => handleDelete(record._id)}>Delete</button>
+                </div>
               </div>
             ))}
           </div>
