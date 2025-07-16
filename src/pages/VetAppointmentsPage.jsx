@@ -25,13 +25,11 @@ import {
   deleteVetAppointment,
 } from '../api/appointmentApi';
 
-// Required for react-modal accessibility
 Modal.setAppElement('#root');
 
 const VetAppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [editingId, setEditingId] = useState(null);
-
   const [dateModalOpen, setDateModalOpen] = useState(false);
   const [timeModalOpen, setTimeModalOpen] = useState(false);
 
@@ -40,7 +38,7 @@ const VetAppointmentsPage = () => {
     time: '',
     petName: '',
     location: '',
-    status: 'Scheduled', // stays default
+    status: 'Scheduled',
     reason: '',
     notes: '',
   });
@@ -82,11 +80,6 @@ const VetAppointmentsPage = () => {
       return;
     }
 
-    if (!form.location) {
-      toast.error("Please select a location.");
-      return;
-    }
-
     const payload = {
       ...form,
       date: form.date.toISOString().split('T')[0],
@@ -100,6 +93,7 @@ const VetAppointmentsPage = () => {
         await addVetAppointment(payload);
         toast.success("Appointment added!");
       }
+
       setForm({
         date: null,
         time: '',
@@ -119,7 +113,7 @@ const VetAppointmentsPage = () => {
 
   const handleEdit = (appt) => {
     setForm({
-      date: new Date(appt.date),
+      date: appt.date ? new Date(appt.date) : null,
       time: appt.time || '',
       petName: appt.petName || '',
       location: appt.location || '',
@@ -156,7 +150,6 @@ const VetAppointmentsPage = () => {
   return (
     <div className="vet-appointment-page">
       <Toaster />
-
       <h2 className="appointment-section-heading">Vet Appointments</h2>
 
       <form className="appointment-form" onSubmit={handleSubmit}>
@@ -199,8 +192,6 @@ const VetAppointmentsPage = () => {
           <option value="Lalitpur">Lalitpur</option>
         </select>
 
-        {/* Status field REMOVED */}
-
         <label>Reason:</label>
         <input
           name="reason"
@@ -225,17 +216,8 @@ const VetAppointmentsPage = () => {
       <Modal
         isOpen={dateModalOpen}
         onRequestClose={() => setDateModalOpen(false)}
-        className={{
-          base: "modal-content",
-          afterOpen: "modal-content--after-open",
-          beforeClose: "modal-content--before-close"
-        }}
-        overlayClassName={{
-          base: "modal-overlay",
-          afterOpen: "modal-overlay--after-open",
-          beforeClose: "modal-overlay--before-close"
-        }}
-        closeTimeoutMS={300}
+        className="modal-content"
+        overlayClassName="modal-overlay"
       >
         <DatePicker
           selected={form.date}
@@ -245,29 +227,28 @@ const VetAppointmentsPage = () => {
       </Modal>
 
       <Modal
-        isOpen={timeModalOpen}
-        onRequestClose={() => setTimeModalOpen(false)}
-        className={{
-          base: "modal-content",
-          afterOpen: "modal-content--after-open",
-          beforeClose: "modal-content--before-close"
-        }}
-        overlayClassName={{
-          base: "modal-overlay",
-          afterOpen: "modal-overlay--after-open",
-          beforeClose: "modal-overlay--before-close"
-        }}
-        closeTimeoutMS={300}
-      >
-        <TimePicker
-          value={form.time}
-          onChange={handleTimeChange}
-          disableClock={false}
-          clearIcon={null}
-          format="h:mm a"
-          openClockOnFocus={true}
-        />
-      </Modal>
+  isOpen={timeModalOpen}
+  onRequestClose={() => setTimeModalOpen(false)}
+  className={{
+    base: "modal-content",
+    afterOpen: "modal-content--after-open",
+    beforeClose: "modal-content--before-close",
+  }}
+  overlayClassName={{
+    base: "modal-overlay",
+    afterOpen: "modal-overlay--after-open",
+    beforeClose: "modal-overlay--before-close",
+  }}
+  closeTimeoutMS={300}
+>
+  <input
+    type="time"
+    value={form.time}
+    onChange={(e) => handleTimeChange(e.target.value)}
+    className="custom-timepicker"
+  />
+</Modal>
+
 
       <div className="appointment-list">
         {appointments.map((appt) => (

@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/AdminDashboard.css";
 import {
-  FaUser,
   FaPaw,
   FaSyringe,
   FaSkull,
@@ -59,12 +58,17 @@ const AdminDashboard = () => {
     }
   };
 
-  // Vet Appointments
+  // ✅ Vet Appointments
   const [appointments, setAppointments] = useState([]);
   const [editAppointmentId, setEditAppointmentId] = useState(null);
   const [editAppointment, setEditAppointment] = useState({
+    petName: "",
+    vetName: "",
     date: "",
     time: "",
+    location: "",
+    status: "Scheduled",
+    reason: "",
     notes: "",
   });
 
@@ -76,14 +80,34 @@ const AdminDashboard = () => {
   const handleEditAppointment = (item) => {
     setEditAppointmentId(item._id);
     setEditAppointment({
-      date: item.date,
-      time: item.time,
-      notes: item.notes,
+      petName: item.petName || "",
+      vetName: item.vetName || "",
+      date: item.date || "",
+      time: item.time || "",
+      location: item.location || "",
+      status: item.status || "Scheduled",
+      reason: item.reason || "",
+      notes: item.notes || "",
     });
   };
 
   const saveAppointment = async () => {
-    await updateVetAppointment(editAppointmentId, editAppointment);
+    const current = appointments.find((a) => a._id === editAppointmentId);
+
+    const updatedData = {};
+
+    Object.keys(editAppointment).forEach((key) => {
+      if (
+        editAppointment[key] !== "" &&
+        editAppointment[key] !== undefined
+      ) {
+        updatedData[key] = editAppointment[key];
+      } else {
+        updatedData[key] = current[key];
+      }
+    });
+
+    await updateVetAppointment(editAppointmentId, updatedData);
     setEditAppointmentId(null);
     fetchAppointments();
   };
@@ -93,7 +117,7 @@ const AdminDashboard = () => {
     fetchAppointments();
   };
 
-  // Vaccination Records
+  // ✅ Vaccination Records
   const [vaccinations, setVaccinations] = useState([]);
   const [editVaccinationId, setEditVaccinationId] = useState(null);
   const [editVaccination, setEditVaccination] = useState({
@@ -110,9 +134,9 @@ const AdminDashboard = () => {
   const handleEditVaccination = (item) => {
     setEditVaccinationId(item._id);
     setEditVaccination({
-      vaccine: item.vaccine,
-      notes: item.notes,
-      date: item.date,
+      vaccine: item.vaccine || "",
+      notes: item.notes || "",
+      date: item.date || "",
     });
   };
 
@@ -127,7 +151,7 @@ const AdminDashboard = () => {
     fetchVaccinations();
   };
 
-  // Lost and Found
+  // ✅ Lost and Found
   const [lostItems, setLostItems] = useState([]);
   const [editLostId, setEditLostId] = useState(null);
   const [editLost, setEditLost] = useState({
@@ -147,12 +171,12 @@ const AdminDashboard = () => {
   const handleEditLost = (item) => {
     setEditLostId(item._id);
     setEditLost({
-      type: item.type,
-      description: item.description,
-      location: item.location,
-      date: item.date,
-      time: item.time,
-      contactInfo: item.contactInfo,
+      type: item.type || "",
+      description: item.description || "",
+      location: item.location || "",
+      date: item.date || "",
+      time: item.time || "",
+      contactInfo: item.contactInfo || "",
     });
   };
 
@@ -167,7 +191,7 @@ const AdminDashboard = () => {
     fetchLostAndFound();
   };
 
-  // Memorials
+  // ✅ Memorials
   const [memorials, setMemorials] = useState([]);
   const [editMemorialId, setEditMemorialId] = useState(null);
   const [editMemorial, setEditMemorial] = useState({
@@ -185,10 +209,10 @@ const AdminDashboard = () => {
   const handleEditMemorial = (item) => {
     setEditMemorialId(item._id);
     setEditMemorial({
-      petName: item.petName,
-      message: item.message,
-      dateOfPassing: item.dateOfPassing,
-      imageUrl: item.imageUrl,
+      petName: item.petName || "",
+      message: item.message || "",
+      dateOfPassing: item.dateOfPassing || "",
+      imageUrl: item.imageUrl || "",
     });
   };
 
@@ -217,7 +241,6 @@ const AdminDashboard = () => {
     navigate("/login");
   };
 
-  // Refs for scrolling
   const appointmentRef = useRef(null);
   const vaccinationRef = useRef(null);
   const lostFoundRef = useRef(null);
@@ -284,7 +307,16 @@ const AdminDashboard = () => {
           ref={appointmentRef}
           title="Vet Appointments"
           items={appointments}
-          fields={["date", "time", "notes"]}
+          fields={[
+            "petName",
+            "vetName",
+            "date",
+            "time",
+            "location",
+            "status",
+            "reason",
+            "notes",
+          ]}
           createdByField="createdBy"
           editId={editAppointmentId}
           editForm={editAppointment}
@@ -347,7 +379,7 @@ const AdminDashboard = () => {
 
 export default AdminDashboard;
 
-// Section Component with ref support
+// ✅ Section Component
 const Section = forwardRef(
   (
     {
@@ -392,15 +424,17 @@ const Section = forwardRef(
                           })
                         }
                       />
-                    ) : (
+                    ) : item[field]?.trim() ? (
                       item[field]
+                    ) : (
+                      "—"
                     )}
                   </td>
                 ))}
                 <td>
-                  {item[createdByField]?.username}
+                  {item[createdByField]?.username || "—"}
                   <br />
-                  <small>{item[createdByField]?.email}</small>
+                  <small>{item[createdByField]?.email || ""}</small>
                 </td>
                 <td>
                   {editId === item._id ? (
@@ -412,12 +446,14 @@ const Section = forwardRef(
                         style={{
                           color: "var(--accent-color)",
                           marginRight: "10px",
+                          cursor: "pointer",
                         }}
                       />
                       <FaTrash
                         onClick={() => onDelete(item._id)}
                         style={{
                           color: "var(--danger-color)",
+                          cursor: "pointer",
                         }}
                       />
                     </>

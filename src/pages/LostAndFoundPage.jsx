@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import TimePicker from "react-time-picker";
+
 import "react-datepicker/dist/react-datepicker.css";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
-import "../css/VetAppointmentPage.css";
+
+import "../css/LostAndFoundPage.css";
 
 import {
   getLostAndFound,
@@ -13,9 +16,15 @@ import {
   deleteLostAndFound,
 } from "../api/LostAndFoundApi";
 
+// Required for accessibility
+Modal.setAppElement("#root");
+
 const LostAndFoundPage = () => {
   const [entries, setEntries] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [dateModalOpen, setDateModalOpen] = useState(false);
+  const [timeModalOpen, setTimeModalOpen] = useState(false);
+
   const [form, setForm] = useState({
     type: "Lost",
     description: "",
@@ -50,6 +59,7 @@ const LostAndFoundPage = () => {
       ...prev,
       date,
     }));
+    setDateModalOpen(false);
   };
 
   const handleTimeChange = (time) => {
@@ -57,6 +67,7 @@ const LostAndFoundPage = () => {
       ...prev,
       time,
     }));
+    setTimeModalOpen(false);
   };
 
   const handleSubmit = async (e) => {
@@ -83,6 +94,7 @@ const LostAndFoundPage = () => {
       } else {
         await addLostAndFound(payload);
       }
+
       setForm({
         type: "Lost",
         description: "",
@@ -98,6 +110,7 @@ const LostAndFoundPage = () => {
   };
 
   const handleEdit = (entry) => {
+    setEditingId(entry._id);
     setForm({
       type: entry.type,
       description: entry.description,
@@ -105,7 +118,6 @@ const LostAndFoundPage = () => {
       date: new Date(entry.date),
       time: entry.time,
     });
-    setEditingId(entry._id);
   };
 
   const handleDelete = async (id) => {
@@ -118,10 +130,10 @@ const LostAndFoundPage = () => {
   };
 
   return (
-    <div className="vet-appointment-page">
-      <h2>Lost and Found</h2>
+    <div className="lost-and-found-page">
+      <h2 className="lost-and-found-section-heading">Lost and Found</h2>
 
-      <form onSubmit={handleSubmit} className="appointment-form">
+      <form onSubmit={handleSubmit} className="lost-and-found-form">
         <label>Type</label>
         <select name="type" value={form.type} onChange={handleChange}>
           <option value="Lost">Lost</option>
@@ -149,39 +161,87 @@ const LostAndFoundPage = () => {
         />
 
         <label>Date</label>
-        <DatePicker
-          selected={form.date}
-          onChange={handleDateChange}
+        <input
+          readOnly
+          value={form.date ? form.date.toLocaleDateString() : ""}
+          placeholder="Select date"
           className="custom-datepicker"
-          placeholderText="Select date"
-          dateFormat="yyyy-MM-dd"
-          required
+          onClick={() => setDateModalOpen(true)}
         />
 
         <label>Time</label>
-        <TimePicker
-          onChange={handleTimeChange}
-          value={form.time}
+        <input
+          readOnly
+          value={form.time || ""}
+          placeholder="Select time"
           className="custom-timepicker"
-          disableClock={true}
-          clearIcon={null}
+          onClick={() => setTimeModalOpen(true)}
         />
 
         <button type="submit">{editingId ? "Update" : "Add"} Entry</button>
       </form>
 
+      {/* Date Modal */}
+      <Modal
+        isOpen={dateModalOpen}
+        onRequestClose={() => setDateModalOpen(false)}
+        className={{
+          base: "modal-content",
+          afterOpen: "modal-content--after-open",
+          beforeClose: "modal-content--before-close",
+        }}
+        overlayClassName={{
+          base: "modal-overlay",
+          afterOpen: "modal-overlay--after-open",
+          beforeClose: "modal-overlay--before-close",
+        }}
+        closeTimeoutMS={300}
+      >
+        <DatePicker
+          selected={form.date}
+          onChange={handleDateChange}
+          inline
+        />
+      </Modal>
+
+      {/* Time Modal */}
+      <Modal
+  isOpen={timeModalOpen}
+  onRequestClose={() => setTimeModalOpen(false)}
+  className={{
+    base: "modal-content",
+    afterOpen: "modal-content--after-open",
+    beforeClose: "modal-content--before-close",
+  }}
+  overlayClassName={{
+    base: "modal-overlay",
+    afterOpen: "modal-overlay--after-open",
+    beforeClose: "modal-overlay--before-close",
+  }}
+  closeTimeoutMS={300}
+>
+  <input
+    type="time"
+    value={form.time}
+    onChange={(e) => handleTimeChange(e.target.value)}
+    className="custom-timepicker"
+  />
+</Modal>
+
       <section>
-        <h2 className="upcoming-appointments">Entries</h2>
+        <h2 className="lost-and-found-section-heading">Entries</h2>
         {entries.length > 0 ? (
-          <div className="appointment-list">
+          <div className="entry-list">
             {entries.map((entry) => (
               <div
                 key={entry._id}
-                className={`appointment-card ${entry.type.toLowerCase()}`}
+                className={`entry-card ${entry.type.toLowerCase()}`}
               >
-                <h3>
-                  [{entry.type}] {entry.description}
-                </h3>
+                <div className="card-header">
+                  <h3>
+                    [{entry.type}] {entry.description}
+                  </h3>
+                </div>
                 <p>
                   <strong>Location:</strong> {entry.location}
                 </p>
@@ -191,8 +251,14 @@ const LostAndFoundPage = () => {
                 <p>
                   <strong>Contact:</strong> {entry.contactInfo || "N/A"}
                 </p>
-                <button onClick={() => handleEdit(entry)}>Edit</button>
-                <button onClick={() => handleDelete(entry._id)}>Delete</button>
+                <div className="card-actions">
+                  <button onClick={() => handleEdit(entry)}>
+                    Edit
+                  </button>
+                  <button onClick={() => handleDelete(entry._id)}>
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
