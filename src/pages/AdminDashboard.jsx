@@ -95,16 +95,12 @@ const AdminDashboard = () => {
     const current = appointments.find((a) => a._id === editAppointmentId);
 
     const updatedData = {};
-
     Object.keys(editAppointment).forEach((key) => {
-      if (
+      updatedData[key] =
         editAppointment[key] !== "" &&
         editAppointment[key] !== undefined
-      ) {
-        updatedData[key] = editAppointment[key];
-      } else {
-        updatedData[key] = current[key];
-      }
+          ? editAppointment[key]
+          : current[key];
     });
 
     await updateVetAppointment(editAppointmentId, updatedData);
@@ -424,6 +420,18 @@ const Section = forwardRef(
                           })
                         }
                       />
+                    ) : field === "imageUrl" && item[field] ? (
+                      <a
+                        href={item[field]}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <img
+                          src={item[field]}
+                          alt="Preview"
+                          className="admin-thumbnail"
+                        />
+                      </a>
                     ) : item[field]?.trim() ? (
                       item[field]
                     ) : (

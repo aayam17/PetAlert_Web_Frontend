@@ -1,13 +1,29 @@
+/* Reset and page styling */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background-color: #dff3fa;
+  font-family: 'Georgia', serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 /* MemorialPage Container */
 .memorial-page {
   max-width: 650px;
-  margin: 3rem auto;
+  width: 90%;
+  margin: 0 auto;
   padding: 2rem 2.5rem;
-  background-color: #f3f0f5;
+  background-color: #f0f8fc;
   border-radius: 12px;
-  box-shadow: 0 3px 15px rgba(150, 130, 180, 0.15);
-  font-family: 'Georgia', serif;
-  color: #4b3b57;
+  box-shadow: 0 3px 15px rgba(100, 170, 200, 0.15);
+  color: #2c546c;
 }
 
 /* Title */
@@ -16,7 +32,7 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #6b5876;
+  color: #347fa5;
   letter-spacing: 1.2px;
 }
 
@@ -31,31 +47,26 @@
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.3rem;
-  color: #5a4d6b;
+  color: #2c546c;
 }
 
-/* Default Inputs and textarea */
 .memorial-form input[type="text"],
 .memorial-form textarea,
-.memorial-form select,
-.memorial-form .custom-datepicker,
-.memorial-form .custom-timepicker {
+.memorial-form select {
   padding: 0.75rem 1rem;
-  border: 1px solid #a89cc0;
+  border: 1px solid #7bbad8;
   border-radius: 8px;
-  background-color: #fffafc;
+  background-color: #ffffff;
   font-size: 1rem;
-  color: #4b3b57;
+  color: #2c546c;
   transition: border-color 0.3s ease;
   font-family: 'Georgia', serif;
 }
 
 .memorial-form input[type="text"]:focus,
 .memorial-form textarea:focus,
-.memorial-form select:focus,
-.memorial-form .custom-datepicker:focus,
-.memorial-form .custom-timepicker:focus {
-  border-color: #9077bf;
+.memorial-form select:focus {
+  border-color: #347fa5;
   outline: none;
 }
 
@@ -63,21 +74,19 @@
   resize: vertical;
   min-height: 80px;
   font-style: italic;
-  color: #6b5876;
+  color: #347fa5;
 }
 
-/* File input */
 .memorial-form input[type="file"] {
   font-size: 0.95rem;
-  color: #6b5876;
-  background-color: #fffafc;
+  color: #347fa5;
+  background-color: #ffffff;
   border: none;
 }
 
-/* Submit Button */
 .memorial-form button {
   padding: 0.75rem 1.5rem;
-  background-color: #7d68a3;
+  background-color: #429edc;
   border: none;
   border-radius: 30px;
   color: #fff;
@@ -91,7 +100,34 @@
 }
 
 .memorial-form button:hover {
-  background-color: #5f4e7a;
+  background-color: #2c6e9c;
+}
+
+/* Date picker custom styles */
+.date-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.date-picker-button {
+  background-color: #429edc;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-weight: 600;
+}
+
+.date-picker-button:hover {
+  background-color: #2c6e9c;
+}
+
+.date-display {
+  font-weight: 600;
+  color: #2c546c;
 }
 
 /* Memorial entries list */
@@ -103,13 +139,13 @@
 }
 
 .memorial-card {
-  background-color: #fff8fd;
-  border-left: 6px solid #9077bf;
+  background-color: #e8f7fd;
+  border-left: 6px solid #347fa5;
   padding: 1.25rem 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 1px 10px rgba(144, 119, 191, 0.12);
+  box-shadow: 0 1px 10px rgba(52, 127, 165, 0.12);
   font-family: 'Georgia', serif;
-  color: #5a4d6b;
+  color: #2c546c;
   line-height: 1.4;
 }
 
@@ -117,7 +153,7 @@
   margin: 0 0 0.5rem 0;
   font-weight: 700;
   font-style: italic;
-  color: #7d68a3;
+  color: #429edc;
 }
 
 .memorial-card p {
@@ -126,32 +162,51 @@
 }
 
 .memorial-card p strong {
-  color: #6b5876;
+  color: #347fa5;
 }
 
-/* --- FORCE white background & black text for name, relation and message --- */
-.memorial-form input[name="name"],
-.memorial-form input[name="relation"],
-.memorial-form textarea[name="message"] {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  font-style: normal !important; /* remove italic */
-  border: 1px solid #a89cc0 !important;
-  padding: 0.75rem 1rem !important;
-  border-radius: 8px !important;
-  font-family: 'Georgia', serif !important;
-  box-sizing: border-box !important;
-  width: 100% !important;
+.image-preview {
+  display: block;
+  width: 200px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 1rem auto;
 }
 
-.memorial-form input[name="name"]:focus,
-.memorial-form input[name="relation"]:focus,
-.memorial-form textarea[name="message"]:focus {
-  border-color: #9077bf !important;
-  outline: none !important;
+.memorial-card img {
+  display: block;
+  width: 120px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 0 auto 1rem auto;
 }
 
-/* Responsive */
+
+.memorial-card .card-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 10px;
+}
+
+.memorial-card .card-actions button {
+  background: #429edc;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.memorial-card .card-actions button:hover {
+  background: #2c6e9c;
+}
+
 @media (max-width: 480px) {
   .memorial-page {
     padding: 1.5rem 1rem;
@@ -159,4 +214,115 @@
   .memorial-form button {
     width: 100%;
   }
+}
+
+/* Modal overlay background */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 10000;
+}
+
+.datepicker-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.react-datepicker {
+  font-family: 'Georgia', serif;
+  font-size: 16px;
+  background: #ffffff;
+  color: #2c546c;
+  border: 1px solid #7bbad8;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 3px 15px rgba(52, 127, 165, 0.15);
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #429edc;
+  color: #ffffff;
+}
+
+.react-datepicker__header {
+  background-color: #f0f8fc;
+  border-bottom: 1px solid #7bbad8;
+}
+
+.react-datepicker__day:hover {
+  background-color: #dff3fa;
+}
+
+/* Modal overlay animations */
+.modal-overlay {
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+}
+
+.modal-overlay--after-open {
+  opacity: 1;
+}
+
+.modal-overlay--before-close {
+  opacity: 0;
+}
+
+.modal-content {
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: all 300ms ease-in-out;
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  z-index: 10000;
+}
+
+.modal-content--after-open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.modal-content--before-close {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.datepicker-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 350px;
 }

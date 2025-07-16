@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "../css/VetAppointmentPage.css";
+import "../css/MemorialPage.css";
 
 import {
   getMemorials,
@@ -10,9 +11,17 @@ import {
   deleteMemorial,
 } from "../api/memorialApi";
 
+import axios from "../api/axiosInstance";
+
+Modal.setAppElement("#root");
+
 const MemorialPage = () => {
   const [entries, setEntries] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [dateModalOpen, setDateModalOpen] = useState(false);
+
   const [form, setForm] = useState({
     petName: "",
     message: "",
@@ -46,18 +55,70 @@ const MemorialPage = () => {
       ...prev,
       dateOfPassing: date,
     }));
+    setDateModalOpen(false);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0] || null;
+    setSelectedFile(file);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm((prev) => ({
+          ...prev,
+          imageUrl: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        imageUrl: "",
+      }));
+    }
+  };
+
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axios.post("/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data.fileUrl;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!form.petName.trim() || !form.dateOfPassing) {
       alert("Please fill in required fields.");
       return;
     }
 
+    let imageUrl = form.imageUrl;
+
+    if (selectedFile) {
+      try {
+        setUploading(true);
+        imageUrl = await uploadImage(selectedFile);
+      } catch (err) {
+        console.error("File upload failed:", err);
+        alert("File upload failed. Please try again.");
+        setUploading(false);
+        return;
+      }
+      setUploading(false);
+    }
+
     const payload = {
       ...form,
       dateOfPassing: form.dateOfPassing.toISOString().split("T")[0],
+      imageUrl,
     };
 
     try {
@@ -72,6 +133,7 @@ const MemorialPage = () => {
         dateOfPassing: null,
         imageUrl: "",
       });
+      setSelectedFile(null);
       setEditingId(null);
       fetchMemorials();
     } catch (err) {
@@ -87,6 +149,7 @@ const MemorialPage = () => {
       imageUrl: entry.imageUrl || "",
     });
     setEditingId(entry._id);
+    setSelectedFile(null);
   };
 
   const handleDelete = async (id) => {
@@ -99,10 +162,10 @@ const MemorialPage = () => {
   };
 
   return (
-    <div className="vet-appointment-page">
+    <div className="memorial-page">
       <h2>Memorial Entries</h2>
 
-      <form onSubmit={handleSubmit} className="appointment-form">
+      <form onSubmit={handleSubmit} className="memorial-form">
         <label>Name</label>
         <input
           type="text"
@@ -123,53 +186,97 @@ const MemorialPage = () => {
         />
 
         <label>Date of Passing</label>
-        <DatePicker
-          selected={form.dateOfPassing}
-          onChange={handleDateChange}
-          className="custom-datepicker"
-          placeholderText="Select date"
-          dateFormat="yyyy-MM-dd"
-          required
-        />
+        <div className="date-picker-row">
+          <span className="date-display">
+            {form.dateOfPassing
+              ? form.dateOfPassing.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })
+              : "No date selected"}
+          </span>
+          <button
+            type="button"
+            onClick={() => setDateModalOpen(true)}
+            className="date-picker-button"
+          >
+            Pick Date
+          </button>
+        </div>
 
-        <label>Image URL (optional)</label>
+        <label>Upload Image (optional)</label>
         <input
-          type="text"
-          name="imageUrl"
-          value={form.imageUrl}
-          onChange={handleChange}
-          placeholder="https://example.com/image.jpg"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
         />
 
-        <button type="submit">{editingId ? "Update" : "Add"} Memorial</button>
+        {form.imageUrl && (
+          <img
+            src={form.imageUrl}
+            alt="Preview"
+            className="image-preview"
+          />
+        )}
+
+        <button type="submit" disabled={uploading}>
+          {editingId ? "Update" : "Add"} Memorial
+        </button>
       </form>
 
-      <section>
+      <Modal
+        isOpen={dateModalOpen}
+        onRequestClose={() => setDateModalOpen(false)}
+        className={{
+          base: "modal-content",
+          afterOpen: "modal-content--after-open",
+          beforeClose: "modal-content--before-close",
+        }}
+        overlayClassName={{
+          base: "modal-overlay",
+          afterOpen: "modal-overlay--after-open",
+          beforeClose: "modal-overlay--before-close",
+        }}
+        closeTimeoutMS={300}
+      >
+        <div className="datepicker-wrapper">
+          <DatePicker
+            selected={form.dateOfPassing}
+            onChange={handleDateChange}
+            inline
+          />
+        </div>
+      </Modal>
+
+      <section className="memorial-list">
         <h2 className="upcoming-appointments">Memorial List</h2>
         {entries.length > 0 ? (
-          <div className="appointment-list">
+          <div className="memorial-list">
             {entries.map((entry) => (
-              <div key={entry._id} className="appointment-card memorial">
+              <div key={entry._id} className="memorial-card">
                 {entry.imageUrl && (
                   <img
                     src={entry.imageUrl}
-                    alt={`${entry.petName} photo`}
-                    style={{
-                      width: "200px",
-                      height: "auto",
-                      marginBottom: "1rem",
-                      borderRadius: "8px",
-                      objectFit: "cover",
-                    }}
+                    alt={`${entry.petName} memorial`}
                   />
                 )}
                 <h3>{entry.petName}</h3>
-                {entry.message && <p><em>"{entry.message}"</em></p>}
+                {entry.message && (
+                  <p>
+                    <em>"{entry.message}"</em>
+                  </p>
+                )}
                 <p>
-                  <strong>Date of Passing:</strong> {entry.dateOfPassing}
+                  <strong>Date of Passing:</strong>{" "}
+                  {entry.dateOfPassing || "—"}
                 </p>
-                <button onClick={() => handleEdit(entry)}>Edit</button>
-                <button onClick={() => handleDelete(entry._id)}>Delete</button>
+                <div className="card-actions">
+                  <button onClick={() => handleEdit(entry)}>Edit</button>
+                  <button onClick={() => handleDelete(entry._id)}>
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
