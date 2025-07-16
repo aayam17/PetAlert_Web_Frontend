@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
-import TimePicker from 'react-time-picker';
 import 'react-datepicker/dist/react-datepicker.css';
-import 'react-time-picker/dist/TimePicker.css';
-import 'react-clock/dist/Clock.css';
 import '../css/VetAppointmentPage.css';
 import toast, { Toaster } from 'react-hot-toast';
 import Swal from 'sweetalert2';
@@ -153,14 +150,25 @@ const VetAppointmentsPage = () => {
       <h2 className="appointment-section-heading">Vet Appointments</h2>
 
       <form className="appointment-form" onSubmit={handleSubmit}>
-        <label>Date:</label>
-        <input
-          readOnly
-          value={form.date ? form.date.toLocaleDateString() : ""}
-          placeholder="Select date"
-          onClick={() => setDateModalOpen(true)}
-          className="custom-datepicker"
-        />
+        <label>Date</label>
+        <div className="date-picker-row">
+          <span className="date-display">
+            {form.date
+              ? form.date.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })
+              : "No date selected"}
+          </span>
+          <button
+            type="button"
+            onClick={() => setDateModalOpen(true)}
+            className="date-picker-button"
+          >
+            Pick Date
+          </button>
+        </div>
 
         <label>Time:</label>
         <input
@@ -208,47 +216,59 @@ const VetAppointmentsPage = () => {
           placeholder="Additional notes"
         />
 
-        <button type="submit" className="btn-primary">
+        <button type="submit">
           {editingId ? 'Update' : 'Add'} Appointment
         </button>
       </form>
 
+      {/* DATE PICKER MODAL */}
       <Modal
         isOpen={dateModalOpen}
         onRequestClose={() => setDateModalOpen(false)}
-        className="modal-content"
-        overlayClassName="modal-overlay"
+        className={{
+          base: "modal-content",
+          afterOpen: "modal-content--after-open",
+          beforeClose: "modal-content--before-close",
+        }}
+        overlayClassName={{
+          base: "modal-overlay",
+          afterOpen: "modal-overlay--after-open",
+          beforeClose: "modal-overlay--before-close",
+        }}
+        closeTimeoutMS={300}
       >
-        <DatePicker
-          selected={form.date}
-          onChange={handleDateChange}
-          inline
-        />
+        <div className="datepicker-wrapper">
+          <DatePicker
+            selected={form.date}
+            onChange={handleDateChange}
+            inline
+          />
+        </div>
       </Modal>
 
+      {/* TIME PICKER MODAL */}
       <Modal
-  isOpen={timeModalOpen}
-  onRequestClose={() => setTimeModalOpen(false)}
-  className={{
-    base: "modal-content",
-    afterOpen: "modal-content--after-open",
-    beforeClose: "modal-content--before-close",
-  }}
-  overlayClassName={{
-    base: "modal-overlay",
-    afterOpen: "modal-overlay--after-open",
-    beforeClose: "modal-overlay--before-close",
-  }}
-  closeTimeoutMS={300}
->
-  <input
-    type="time"
-    value={form.time}
-    onChange={(e) => handleTimeChange(e.target.value)}
-    className="custom-timepicker"
-  />
-</Modal>
-
+        isOpen={timeModalOpen}
+        onRequestClose={() => setTimeModalOpen(false)}
+        className={{
+          base: "modal-content",
+          afterOpen: "modal-content--after-open",
+          beforeClose: "modal-content--before-close",
+        }}
+        overlayClassName={{
+          base: "modal-overlay",
+          afterOpen: "modal-overlay--after-open",
+          beforeClose: "modal-overlay--before-close",
+        }}
+        closeTimeoutMS={300}
+      >
+        <input
+          type="time"
+          value={form.time}
+          onChange={(e) => handleTimeChange(e.target.value)}
+          className="custom-timepicker"
+        />
+      </Modal>
 
       <div className="appointment-list">
         {appointments.map((appt) => (
