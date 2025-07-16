@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 import TimePicker from 'react-time-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-import "../css/VetAppointmentPage.css";
-
+import '../css/VetAppointmentPage.css';
+import toast, { Toaster } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+import {
+  FaCalendarAlt,
+  FaClock,
+  FaPaw,
+  FaMapMarkerAlt,
+  FaEdit,
+  FaTrash,
+  FaStickyNote,
+} from 'react-icons/fa';
 
 import {
   getVetAppointments,
@@ -14,10 +25,25 @@ import {
   deleteVetAppointment,
 } from '../api/appointmentApi';
 
+// Required for react-modal accessibility
+Modal.setAppElement('#root');
+
 const VetAppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ date: null, time: '', notes: '' });
+
+  const [dateModalOpen, setDateModalOpen] = useState(false);
+  const [timeModalOpen, setTimeModalOpen] = useState(false);
+
+  const [form, setForm] = useState({
+    date: null,
+    time: '',
+    petName: '',
+    location: '',
+    status: 'Scheduled', // stays default
+    reason: '',
+    notes: '',
+  });
 
   const fetchAppointments = async () => {
     try {
@@ -25,6 +51,7 @@ const VetAppointmentsPage = () => {
       setAppointments(data);
     } catch (error) {
       console.error("Error fetching appointments:", error);
+      toast.error("Failed to load appointments.");
     }
   };
 
@@ -34,10 +61,12 @@ const VetAppointmentsPage = () => {
 
   const handleDateChange = (date) => {
     setForm((prev) => ({ ...prev, date }));
+    setDateModalOpen(false);
   };
 
   const handleTimeChange = (time) => {
     setForm((prev) => ({ ...prev, time }));
+    setTimeModalOpen(false);
   };
 
   const handleChange = (e) => {
@@ -47,74 +76,223 @@ const VetAppointmentsPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.date || !form.time) {
-      alert("Please select both date and time.");
+
+    if (!form.date || !form.time || !form.petName) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    if (!form.location) {
+      toast.error("Please select a location.");
       return;
     }
 
     const payload = {
+      ...form,
       date: form.date.toISOString().split('T')[0],
-      time: form.time,
-      notes: form.notes,
     };
 
     try {
       if (editingId) {
         await updateVetAppointment(editingId, payload);
+        toast.success("Appointment updated!");
       } else {
         await addVetAppointment(payload);
+        toast.success("Appointment added!");
       }
-      setForm({ date: null, time: '', notes: '' });
+      setForm({
+        date: null,
+        time: '',
+        petName: '',
+        location: '',
+        status: 'Scheduled',
+        reason: '',
+        notes: '',
+      });
       setEditingId(null);
       fetchAppointments();
     } catch (err) {
       console.error("Error submitting appointment:", err);
+      toast.error("Failed to save appointment.");
     }
   };
 
   const handleEdit = (appt) => {
     setForm({
       date: new Date(appt.date),
-      time: appt.time,
-      notes: appt.notes,
+      time: appt.time || '',
+      petName: appt.petName || '',
+      location: appt.location || '',
+      status: appt.status || 'Scheduled',
+      reason: appt.reason || '',
+      notes: appt.notes || '',
     });
     setEditingId(appt._id);
   };
 
   const handleDelete = async (id) => {
-    try {
-      await deleteVetAppointment(id);
-      fetchAppointments();
-    } catch (err) {
-      console.error("Error deleting appointment:", err);
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "Delete this appointment permanently?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteVetAppointment(id);
+        toast.success("Appointment deleted!");
+        fetchAppointments();
+      } catch (err) {
+        console.error("Error deleting appointment:", err);
+        toast.error("Failed to delete appointment.");
+      }
     }
   };
 
   return (
     <div className="vet-appointment-page">
-      <h2>Vet Appointments</h2>
+      <Toaster />
+
+      <h2 className="appointment-section-heading">Vet Appointments</h2>
 
       <form className="appointment-form" onSubmit={handleSubmit}>
         <label>Date:</label>
-        <DatePicker selected={form.date} onChange={handleDateChange} />
+        <input
+          readOnly
+          value={form.date ? form.date.toLocaleDateString() : ""}
+          placeholder="Select date"
+          onClick={() => setDateModalOpen(true)}
+          className="custom-datepicker"
+        />
 
         <label>Time:</label>
-        <TimePicker value={form.time} onChange={handleTimeChange} />
+        <input
+          readOnly
+          value={form.time || ""}
+          placeholder="Select time"
+          onClick={() => setTimeModalOpen(true)}
+          className="custom-timepicker"
+        />
+
+        <label>Pet Name:</label>
+        <input
+          name="petName"
+          value={form.petName}
+          onChange={handleChange}
+          placeholder="Pet's name"
+          required
+        />
+
+        <label>Location:</label>
+        <select
+          name="location"
+          value={form.location}
+          onChange={handleChange}
+        >
+          <option hidden value="">Select location</option>
+          <option value="Kathmandu">Kathmandu</option>
+          <option value="Bhaktapur">Bhaktapur</option>
+          <option value="Lalitpur">Lalitpur</option>
+        </select>
+
+        {/* Status field REMOVED */}
+
+        <label>Reason:</label>
+        <input
+          name="reason"
+          value={form.reason}
+          onChange={handleChange}
+          placeholder="Reason for visit"
+        />
 
         <label>Notes:</label>
-        <textarea name="notes" value={form.notes} onChange={handleChange} />
+        <textarea
+          name="notes"
+          value={form.notes}
+          onChange={handleChange}
+          placeholder="Additional notes"
+        />
 
-        <button type="submit">{editingId ? 'Update' : 'Add'} Appointment</button>
+        <button type="submit" className="btn-primary">
+          {editingId ? 'Update' : 'Add'} Appointment
+        </button>
       </form>
+
+      <Modal
+        isOpen={dateModalOpen}
+        onRequestClose={() => setDateModalOpen(false)}
+        className={{
+          base: "modal-content",
+          afterOpen: "modal-content--after-open",
+          beforeClose: "modal-content--before-close"
+        }}
+        overlayClassName={{
+          base: "modal-overlay",
+          afterOpen: "modal-overlay--after-open",
+          beforeClose: "modal-overlay--before-close"
+        }}
+        closeTimeoutMS={300}
+      >
+        <DatePicker
+          selected={form.date}
+          onChange={handleDateChange}
+          inline
+        />
+      </Modal>
+
+      <Modal
+        isOpen={timeModalOpen}
+        onRequestClose={() => setTimeModalOpen(false)}
+        className={{
+          base: "modal-content",
+          afterOpen: "modal-content--after-open",
+          beforeClose: "modal-content--before-close"
+        }}
+        overlayClassName={{
+          base: "modal-overlay",
+          afterOpen: "modal-overlay--after-open",
+          beforeClose: "modal-overlay--before-close"
+        }}
+        closeTimeoutMS={300}
+      >
+        <TimePicker
+          value={form.time}
+          onChange={handleTimeChange}
+          disableClock={false}
+          clearIcon={null}
+          format="h:mm a"
+          openClockOnFocus={true}
+        />
+      </Modal>
 
       <div className="appointment-list">
         {appointments.map((appt) => (
           <div className="appointment-card" key={appt._id}>
-            <p><strong>Date:</strong> {appt.date}</p>
-            <p><strong>Time:</strong> {appt.time}</p>
-            <p><strong>Notes:</strong> {appt.notes}</p>
-            <button onClick={() => handleEdit(appt)}>Edit</button>
-            <button onClick={() => handleDelete(appt._id)}>Delete</button>
+            <div className="card-header">
+              <h3>
+                <FaPaw /> {appt.petName || "—"}
+              </h3>
+              <span className={`status ${(appt.status || 'Scheduled').toLowerCase()}`}>
+                {appt.status || 'Scheduled'}
+              </span>
+            </div>
+            <p><FaCalendarAlt /> {appt.date || "—"}</p>
+            <p><FaClock /> {appt.time || "—"}</p>
+            <p><FaMapMarkerAlt /> {appt.location || "—"}</p>
+            <p><FaStickyNote /> {appt.reason || "—"}</p>
+            <p><strong>Notes:</strong> {appt.notes || "—"}</p>
+            <div className="card-actions">
+              <button onClick={() => handleEdit(appt)}>
+                <FaEdit /> Edit
+              </button>
+              <button onClick={() => handleDelete(appt._id)}>
+                <FaTrash /> Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>
