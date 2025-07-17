@@ -544,3 +544,189 @@ html {
   color: #9ca3af;
   font-style: italic;
 }
+
+/* === Profile Icon Flyout === */
+.user-flyout {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border-radius: 12px;
+  width: 250px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  padding: 1rem;
+  animation: slideFade 0.2s ease-out;
+}
+
+@keyframes slideFade {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.user-flyout-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.user-flyout-header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-flyout-header .username {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #374151;
+}
+
+.user-flyout-header .useremail {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.user-flyout-option {
+  padding: 0.6rem 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #4b5563;
+  transition: background 0.2s, color 0.2s;
+}
+
+.user-flyout-option:hover {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+/* === Settings Box (Left of Icon) === */
+.settings-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 260px;
+  width: 180px;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+}
+
+.settings-item {
+  font-size: 0.9rem;
+  color: #374151;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.settings-item span {
+  float: right;
+  font-weight: 600;
+  color: #f97316;
+}
+
+/* === Modal Backdrop + Profile Card === */
+.profile-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.profile-modal {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 400px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.25s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 3px solid #f97316;
+}
+
+.modal-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+}
+
+.modal-email {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.close-icon {
+  font-size: 1.3rem;
+  color: #f97316;
+  cursor: pointer;
+}
+
+.profile-fields {
+  font-size: 0.9rem;
+  color: #374151;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 0.8rem;
+  background: #f97316;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.save-btn:hover {
+  background: #fb923c;
+}

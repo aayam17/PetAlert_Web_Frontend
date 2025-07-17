@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { FaPaw, FaPhoneAlt, FaMapMarkerAlt, FaClock, FaBars, FaBell, FaTimes } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  FaPaw,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+  FaClock,
+  FaBars,
+  FaBell,
+  FaTimes,
+  FaUser,
+  FaCog,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import io from "socket.io-client";
-import "../css/dashboard.css"; 
+import "../css/dashboard.css";
 
-import userImg from "../assets/user.png"; 
-import logoPet from "../assets/logo_pet.png"; 
+import userImg from "../assets/user.png";
+import logoPet from "../assets/logo_pet.png";
 
 const services = [
   {
@@ -37,84 +48,88 @@ const services = [
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const socketRef = useRef(null); // useRef to hold the socket instance
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserFlyout, setShowUserFlyout] = useState(false);
+  const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const socketRef = useRef(null);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const toggleDropdown = () => {
-    setShowDropdown(!showDropdown);
-  };
-
-  const closeDropdown = () => {
-    setShowDropdown(false);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   useEffect(() => {
-    console.log('Dashboard useEffect is running to establish socket connection');
-    const socket = io("http://localhost:3000"); // Connect to your backend Socket.IO server
-    socketRef.current = socket; // Store socket instance in ref
+    const socket = io("http://localhost:3000");
+    socketRef.current = socket;
 
     socket.on("connect", () => {
       console.log("🟢 Connected to WebSocket");
-    });
-
-    socket.on("newLostAndFound", (data) => {
-      console.log("🔔 New Lost & Found data:", data);
-      setNotifications((prev) => [
-        {
-          id: Date.now(), 
-          message: `New ${data.type} post: ${data.description} in ${data.location}`,
-        },
-        ...prev, 
-      ]);
-    });
-
-    socket.on("newMemorial", (data) => {
-      console.log("🔔 New Memorial data:", data);
-      setNotifications((prev) => [
-        {
-          id: Date.now(),
-          message: `New Memorial Tribute for ${data.petName}`,
-        },
-        ...prev, 
-      ]);
     });
 
     socket.on("disconnect", () => {
       console.log("🔴 Disconnected from WebSocket");
     });
 
-    socket.on("connect_error", (err) => {
-      console.error("❌ Socket.IO Connect Error:", err);
+    socket.on("newLostAndFound", (data) => {
+      setNotifications((prev) => [
+        {
+          id: Date.now(),
+          message: `New ${data.type} post: ${data.description} in ${data.location}`,
+        },
+        ...prev,
+      ]);
     });
 
-    // Cleanup function: This runs when the component unmounts
+    socket.on("newMemorial", (data) => {
+      setNotifications((prev) => [
+        {
+          id: Date.now(),
+          message: `New Memorial Tribute for ${data.petName}`,
+        },
+        ...prev,
+      ]);
+    });
+
     return () => {
-      console.log('Dashboard useEffect cleanup running (disconnecting socket)');
       if (socketRef.current) {
         socketRef.current.disconnect();
-        socketRef.current = null; // Clear the ref
+        socketRef.current = null;
       }
     };
-  }, []); 
+  }, []);
 
-  // Optional: Click outside to close dropdown
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setLoggedInUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showDropdown && !event.target.closest(".notification-container")) {
-        setShowDropdown(false);
+      if (!event.target.closest(".notification-container")) {
+        setShowNotifications(false);
+      }
+      if (
+        !event.target.closest(".user-avatar") &&
+        !event.target.closest(".user-flyout")
+      ) {
+        setShowUserFlyout(false);
+        setShowSettingsDropdown(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showDropdown]);
-
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="dashboard-container">
@@ -123,7 +138,6 @@ const Dashboard = () => {
         <div className="sidebar-header">
           <span className="brand-name">PetAlert</span>
         </div>
-        {/* Only render nav links if sidebar is open */}
         {isSidebarOpen && (
           <nav className="sidebar-nav">
             <Link to="/about">About Us</Link>
@@ -133,8 +147,7 @@ const Dashboard = () => {
         )}
       </aside>
 
-
-      <div className="main-content" onClick={closeDropdown}>
+      <div className="main-content">
         {/* Topbar */}
         <header className="topbar">
           <div className="topbar-left">
@@ -144,25 +157,24 @@ const Dashboard = () => {
             <h1 className="page-title">Dashboard</h1>
           </div>
           <div className="topbar-right">
-            <div className="notification-container" style={{ position: "relative" }}>
+            {/* Notification */}
+            <div className="notification-container">
               <FaBell
                 className="notification-icon"
-                size={35}
-                color="black"
-                onClick={(e) => {
-                  e.stopPropagation(); 
-                  toggleDropdown();
-                }}
+                size={30}
+                onClick={() => setShowNotifications(!showNotifications)}
               />
               {notifications.length > 0 && (
                 <span className="notification-badge">{notifications.length}</span>
               )}
-
-              {showDropdown && (
+              {showNotifications && (
                 <div className="notification-dropdown">
                   <div className="dropdown-header">
                     <span>Notifications</span>
-                    <FaTimes onClick={closeDropdown} style={{ cursor: "pointer" }} />
+                    <FaTimes
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowNotifications(false)}
+                    />
                   </div>
                   {notifications.length > 0 ? (
                     notifications.map((note) => (
@@ -176,7 +188,35 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
-            <img src={userImg} alt="User" className="user-avatar" />
+
+            {/* Avatar & Flyout */}
+            <div style={{ position: "relative" }}>
+              <img
+                src={userImg}
+                alt="User"
+                className="user-avatar"
+                onClick={() => setShowUserFlyout(!showUserFlyout)}
+              />
+              {showUserFlyout && (
+                <div className="user-flyout">
+                  <div className="user-flyout-option" onClick={() => setShowProfileModal(true)}>
+                    <FaUser /> My Profile
+                  </div>
+                  <div className="user-flyout-option" onClick={() => setShowSettingsDropdown(true)}>
+                    <FaCog /> Settings
+                  </div>
+                  <div className="user-flyout-option" onClick={handleLogout}>
+                    <FaSignOutAlt /> Logout
+                  </div>
+                </div>
+              )}
+              {showSettingsDropdown && (
+                <div className="settings-dropdown">
+                  <div className="settings-item">Theme <span>Light</span></div>
+                  <div className="settings-item">Notifications <span>On</span></div>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
@@ -193,7 +233,7 @@ const Dashboard = () => {
           </Link>
         </section>
 
-        {/* Services Section */}
+        {/* Services */}
         <section id="services" className="services">
           <h3 className="section-title">Our Services</h3>
           <div className="services-grid">
@@ -202,9 +242,7 @@ const Dashboard = () => {
                 <div className="service-icon">{service.icon}</div>
                 <h4 className="service-title">{service.title}</h4>
                 <p className="service-description">{service.description}</p>
-                <Link to={service.route} className="learn-more">
-                  Learn more →
-                </Link>
+                <Link to={service.route} className="learn-more">Learn more →</Link>
               </div>
             ))}
           </div>
@@ -217,25 +255,16 @@ const Dashboard = () => {
             <p className="brand-name">PetAlert</p>
           </div>
           <div className="footer-info">
-            <p>
-              <FaClock /> Working Hours
-            </p>
+            <p><FaClock /> Working Hours</p>
             <p>Available 24/7 on our website</p>
           </div>
           <div className="footer-info">
-            <p>
-              <FaMapMarkerAlt /> Location
-            </p>
+            <p><FaMapMarkerAlt /> Location</p>
             <p>Kathmandu, Nepal</p>
           </div>
           <div className="footer-info">
-            <p>
-              <FaPhoneAlt /> Contact
-            </p>
-            <p>
-              Got questions? <br />
-              <strong>+977 9849610810</strong>
-            </p>
+            <p><FaPhoneAlt /> Contact</p>
+            <p>Got questions? <br /><strong>+977 9849610810</strong></p>
           </div>
           <div className="footer-follow">
             <p>Follow</p>
@@ -246,6 +275,34 @@ const Dashboard = () => {
           </div>
         </footer>
       </div>
+
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <div className="profile-modal-backdrop" onClick={() => setShowProfileModal(false)}>
+          <div className="profile-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-header">
+              <h3>My Profile</h3>
+              <FaTimes className="close-icon" onClick={() => setShowProfileModal(false)} />
+            </div>
+            <img src={userImg} alt="User" className="modal-avatar" />
+            {loggedInUser ? (
+              <>
+                <div className="modal-name">{loggedInUser.username}</div>
+                <div className="modal-email">{loggedInUser.email}</div>
+                <div className="profile-fields">
+                  <div>Role: {loggedInUser.role}</div>
+                  <div>Location: Kathmandu, Nepal</div>
+                </div>
+              </>
+            ) : (
+              <div className="modal-email">User info not available</div>
+            )}
+            <button className="save-btn" onClick={() => setShowProfileModal(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
