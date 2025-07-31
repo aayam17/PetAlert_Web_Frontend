@@ -6,19 +6,14 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "How do I create a pet profile?",
-      answer:
-        "To create a pet profile, navigate to the 'Pet Profiles' section and click the 'Add New Pet' button. Fill in the details and save.",
-    },
-    {
       question: "Can I track my pet's vaccination records?",
       answer:
-        "Yes! You can add, edit, and view vaccination records under each pet's profile to stay up-to-date.",
+        "Yes! You can add, edit, and view vaccination records under each pet's records to stay up-to-date.",
     },
     {
       question: "How do I book a vet appointment?",
       answer:
-        "Visit the 'Vet Appointments' page, select your preferred vet and time slot, and confirm your booking.",
+        "Visit the 'Vet Appointments' page, select your prefered location and time slot, and confirm your booking.",
     },
     {
       question: "What if I lose my pet?",

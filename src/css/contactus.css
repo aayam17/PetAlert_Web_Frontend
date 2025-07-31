@@ -126,3 +126,16 @@
   box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
   transform: scale(1.05);
 }
+
+.contact-display {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.contact-display p {
+  margin-bottom: 0.75rem;
+}

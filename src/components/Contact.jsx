@@ -7,28 +7,16 @@ const Contact = () => {
       <header className="contact-hero">
         <h2 id="contact-title" className="contact-title">Contact Us</h2>
         <p className="contact-tagline">
-          If you have questions or need assistance, feel free to reach out to us!
+          We'd love to hear from you! Reach out through any of the methods below.
         </p>
       </header>
 
-      <address className="contact-info">
-        <p><strong>Phone:</strong> 9849-XXXXXX</p>
-        <p><strong>Email:</strong> <a href="mailto:support@petalert.com">support@petalert.com</a></p>
-        <p><strong>Address:</strong> Kathmandu, Nepal</p>
-      </address>
-
-      <form className="contact-form" onSubmit={(e) => e.preventDefault()} aria-label="Contact form">
-        <label htmlFor="name">Name:</label>
-        <input id="name" name="name" type="text" placeholder="Your name" required />
-
-        <label htmlFor="email">Email:</label>
-        <input id="email" name="email" type="email" placeholder="Your email" required />
-
-        <label htmlFor="message">Message:</label>
-        <textarea id="message" name="message" placeholder="Write your message here" rows={5} required></textarea>
-
-        <button type="submit" aria-label="Send message">Send</button>
-      </form>
+      <div className="contact-display">
+        <p><strong>Email:</strong> <a href="mailto:petalert@gmail.com">petalert@gmail.com</a></p>
+        <p><strong>Phone:</strong> +977 9849610810</p>
+        <p><strong>Location:</strong> Kathmandu, Nepal</p>
+        <p><strong>Support Hours:</strong> Available 24/7 on our website</p>
+      </div>
     </section>
   );
 };
