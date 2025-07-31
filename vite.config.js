@@ -1,5 +1,5 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite"; // Ensure this is from 'vite' for the main config
+import { defineConfig } from "vite";
 import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -15,6 +15,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // IMPORTANT: No 'test' block here if you have a separate vitest.config.js
-  // The 'test' configuration should only be in vitest.config.js
+  // IMPORTANT: No 'test' block here as you have a separate vitest.config.js
 });
